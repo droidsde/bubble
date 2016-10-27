@@ -135,6 +135,8 @@ void PropLayer::menuPauseCallBack(Ref* Psender)
 
 void PropLayer::update(float delta)
 {
+	/*¼ÆÊ±º¯Êý*/
+	/*
 	setTime(getTime() - 1.0/60.0);
 
 	auto timeLabel = (ui::TextBMFont*)_propLayer->getChildByTag(131);
@@ -191,6 +193,7 @@ void PropLayer::update(float delta)
 			timeSptite->setVisible(false);
 		}
 	}
+	*/
 }
 void PropLayer::AddScoreLabel(int var)
 {

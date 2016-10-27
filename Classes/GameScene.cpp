@@ -27,7 +27,7 @@ bool GameScene::init()
 	//_touchLayer = TouchLayer::create();
 	//addChild(_touchLayer);
 
-	_bubbleLayer = BubbleLayer::create();
+	_bubbleLayer = LevelType1::create();
 	addChild(_bubbleLayer);
 
 	_propLayer = PropLayer::create();

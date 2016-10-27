@@ -3,7 +3,8 @@
 
 #include "cocos2d.h"
 #include "TouchLayer.h"
-#include "BubbleLayer.h"
+#include "LevelType1.h"
+//#include "BubbleLayer.h"
 #include "PropLayer.h"
 
 
@@ -22,7 +23,7 @@ public:
 	virtual bool init();
 
 	TouchLayer* _touchLayer;
-	BubbleLayer* _bubbleLayer;
+	LevelType1* _bubbleLayer;
 	PropLayer* _propLayer;
 	Node* _bg;
 

@@ -31,7 +31,7 @@ bool TouchLayer::onTouchBegan(Touch *touch, Event *unused_event)
 {
 	/*
 	auto gameScene = (GameScene*)this->getParent();
-	BubbleLayer* bubbleLayer = gameScene->_bubbleLayer;
+	LevelType1* bubbleLayer = gameScene->_bubbleLayer;
 	auto real = (touch->getLocation() - bubbleLayer->ready->getPosition()).getNormalized();
 	bubbleLayer->setReal(real);*/
 	return getTouchEnable();
@@ -41,7 +41,7 @@ bool TouchLayer::onTouchBegan(Touch *touch, Event *unused_event)
 void TouchLayer::onTouchMoved(Touch *touch, Event *unused_event)
 {
 	auto gameScene = (GameScene*)this->getParent();
-	BubbleLayer* bubbleLayer = gameScene->_bubbleLayer;
+	LevelType1* bubbleLayer = gameScene->_bubbleLayer;
 	bubbleLayer->removeChildByTag(100);
 
 	if (touch->getLocation().y <= TOUCH_DOWN * Director::getInstance()->getVisibleSize().height || touch->getLocation().y >= TOUCH_TOP*Director::getInstance()->getVisibleSize().height)
@@ -63,7 +63,7 @@ void TouchLayer::onTouchMoved(Touch *touch, Event *unused_event)
 void TouchLayer::onTouchEnded(Touch *touch, Event *unused_event)
 {
 	auto gameScene = (GameScene*)this->getParent();
-	BubbleLayer* bubbleLayer = gameScene->_bubbleLayer;
+	LevelType1* bubbleLayer = gameScene->_bubbleLayer;
 	bubbleLayer->removeChildByTag(100);
 	
 	if (touch->getLocation().y <= TOUCH_DOWN * Director::getInstance()->getVisibleSize().height && touch->getLocation().x <= 200)
