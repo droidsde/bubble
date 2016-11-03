@@ -15,14 +15,14 @@ using namespace cocostudio;
 class LevelType1 : public Layer
 {
 public:
-		virtual bool init();
+		virtual bool init(int level);
 
 		static cocos2d::Scene* scene();
 
 	
 	void onTouch(Point target);
 
-	CREATE_FUNC(LevelType1);
+	static LevelType1* create(int level);
 	virtual void update(float delta);
 private:
 
@@ -46,7 +46,7 @@ private:
 	int commonGroup = 0;
 
 	EventListenerTouchOneByOne* _listener;
-	bool initTheBoard(int level = 0);  //初始化关卡
+	bool initTheBoard(int level);  //初始化关卡
 	Bubble *randomPaoPao(); //获取随机泡泡
 	Point getPointByRowAndCol(int row, int col); //根据行列及是否左缺确定位置
 	Point getRowAndColByPoint(Point target);

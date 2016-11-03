@@ -19,9 +19,9 @@ typedef enum{
 class GameScene : public Scene
 {
 public:
-	CREATE_FUNC(GameScene);
-	virtual bool init();
-
+	static GameScene* create(int level);
+	virtual bool init(int level);
+	int _level;
 	TouchLayer* _touchLayer;
 	LevelType1* _bubbleLayer;
 	PropLayer* _propLayer;

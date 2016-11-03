@@ -50,7 +50,7 @@ bool GameoverLayer::init()
 }
 void GameoverLayer::menuStartCallBack(Ref* Psender)
 {
-	Director::getInstance()->replaceScene(GameScene::create());
+	//Director::getInstance()->replaceScene(GameScene::create());//游戏结束重新开始
 }
 
 void GameoverLayer::menuOverCallBack(Ref* Psender)

@@ -12,6 +12,22 @@ using namespace cocostudio::timeline;
 static float waitTime = 0.1f;
 static int sameSum = 0;
 
+LevelType1* LevelType1:: create(int level)
+{
+	LevelType1 *pRet = new  LevelType1();
+	if (pRet && pRet->init(level))
+	{
+		pRet->autorelease();
+		return pRet;
+	}
+	else
+	{
+		delete pRet;
+		pRet = NULL;
+		return NULL;
+	}
+}
+/*
 Scene* LevelType1::scene()
 {
 		Scene *scene = Scene::create();
@@ -22,18 +38,18 @@ Scene* LevelType1::scene()
 
 		return scene;
 }
-
-bool LevelType1::init()
+*/
+bool LevelType1::init(int level)
 {
 	if (!Layer::init())
 	{
 		return false;
 	}
 
-	_level = 0;
+	_level = level;
 	
-	UserData::getInstance()->setLevel(1);
-	UserData::getInstance()->setScore(0);
+	//UserData::getInstance()->setLevel(1);
+	//UserData::getInstance()->setScore(0);
 
 
 	_listener = EventListenerTouchOneByOne::create();
@@ -44,7 +60,7 @@ bool LevelType1::init()
 
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(_listener, this);
 
-	initTheBoard();
+	initTheBoard(_level);
 	initWaitPaoPao();
 	initReadyPaoPao();
 	

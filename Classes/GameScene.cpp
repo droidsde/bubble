@@ -11,9 +11,25 @@ using namespace CocosDenshion;
 using namespace cocostudio::timeline;
 
 
-bool GameScene::init()
-{
+GameScene* GameScene:: create(int level)
+{ 
+	GameScene *pRet = new GameScene();
+	if (pRet && pRet->init(level))
+	{ 
+	pRet->autorelease();
+	return pRet;
+	}
+	else
+	{
+	delete pRet;
+	pRet = NULL;
+	return NULL;
+	} 
+}
 
+bool GameScene::init(int level)
+{
+	_level = level;
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("bubbles.plist");
 
 	_bg = CSLoader::createNode("Background.csb");
@@ -27,7 +43,7 @@ bool GameScene::init()
 	//_touchLayer = TouchLayer::create();
 	//addChild(_touchLayer);
 
-	_bubbleLayer = LevelType1::create();
+	_bubbleLayer = LevelType1::create(_level);
 	addChild(_bubbleLayer);
 
 	_propLayer = PropLayer::create();

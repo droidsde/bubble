@@ -112,7 +112,7 @@ void StartLayer::menuNewGameCallback(Ref* pSender)
 {
 	SimpleAudioEngine::getInstance()->playEffect("Music/Click.mp3");
 	SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-	Director::getInstance()->pushScene(GameScene::create());
+	Director::getInstance()->pushScene(GameScene::create(0));
 }
 
 void StartLayer::menuShopCallBack(Ref* pSender)
