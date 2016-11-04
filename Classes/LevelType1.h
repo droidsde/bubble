@@ -34,6 +34,7 @@ private:
 	
 	CC_SYNTHESIZE(Vec2, real, Real);
 	CC_SYNTHESIZE(int, _level, Level);
+	int bubbleNumber = 0;
 	bool _havePass = false;
 	int sameGroup1 = 0;
 	int sameGroup2 = 0;
@@ -57,6 +58,7 @@ private:
 	bool isCollideBorder();
 	bool checCollideBoard();
 	void changeWaitToReady();
+	void addTwoRows();
 	void correctReadyPosition();
 	bool getFirstRowFlag();
 	bool isCircleCollision(Point pos1, float radius1, Point pos2, float radius2);
@@ -74,6 +76,8 @@ private:
 	void downBubble();
 	void downBubbleAction(Bubble *obj);
 	void initBubbleAction(Bubble *obj, int i, int j);
+	void addTwoRowsOriginalBubbleAction(Bubble *obj, int i, int j);
+	void addTwoRowsRandomBubbleAction(Bubble *obj, int i, int j);
 	void gameOver(bool over = false);
 	void setReadyAngle(Point target);
 	void throwBallAction();

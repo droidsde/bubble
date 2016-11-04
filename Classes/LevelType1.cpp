@@ -311,8 +311,76 @@ void LevelType1::changeWaitToReady()
 
 	ready->runAction(seq);
 
-}
+	bubbleNumber++;
+	if (levelSettings[_level][2][0] == 1)//如泡泡下降启用
+	{
+		if (bubbleNumber%levelSettings[_level][2][1] == 0)
+		{
+			addTwoRows();
+		}
+	}
 
+}
+void LevelType1::addTwoRows()
+{
+	for (int j = 0; j < MAX_COLS-1; ++j)//如果bubble[9]不为空，则加行后游戏结束
+	{
+		if (board[9][j] == NULL)
+		{
+			continue;
+		}
+		else
+		{
+			gameOver(true);
+		}
+	}
+	for (int i = MAX_ROWS-1; i >=2; i--)
+	{
+		for (int j = 0; j < MAX_COLS; ++j)
+		{
+			if ((i % 2 && j == MAX_COLS - 1)||(board[i][j]==NULL&&board[i-2][j]==NULL))
+			{
+				continue;
+			}
+			if (board[i][j] != NULL)
+			{
+				board[i][j]->removeFromParentAndCleanup(true);
+			}
+			board[i][j] = NULL;
+			if (board[i - 2][j] != NULL)
+			{
+				board[i][j] = Bubble::initWithType(board[i - 2][j]->getType());
+				board[i][j]->setFlag(board[i - 2][j]->getFlag());
+				addChild(board[i][j]);
+				addTwoRowsOriginalBubbleAction(board[i][j], i, j);
+			}
+		}
+	}
+	for (int j = 0; j < MAX_COLS; ++j)//bubble[0] Random
+	{
+		if (board[0][j] != NULL)
+		{
+			board[0][j]->removeFromParentAndCleanup(true);
+		}
+		board[0][j] = randomPaoPao();
+		bool flag = true;
+		board[0][j]->setFlag(flag);
+		addChild(board[0][j]);
+		addTwoRowsRandomBubbleAction(board[0][j], 0, j);
+	}
+	for (int j = 0; j < MAX_COLS-1; ++j)//bubble[1] Random
+	{
+		if (board[1][j] != NULL)
+		{
+			board[1][j]->removeFromParentAndCleanup(true);
+		}
+		board[1][j] = randomPaoPao();
+		bool flag = false;
+		board[1][j]->setFlag(flag);
+		addChild(board[1][j]);
+		addTwoRowsRandomBubbleAction(board[1][j], 1, j);
+	}
+}
 void LevelType1::correctReadyPosition()
 {
 	int offX = 0, offY = 0;
@@ -934,7 +1002,21 @@ void LevelType1::initBubbleAction(Bubble *obj, int i, int j)
 	auto moveTo = MoveTo::create(0.4f + j * 0.1f, point);
 	obj->runAction(Sequence::create(moveTo, CallFunc::create([=](){setEnable(); }), nullptr));
 }
-
+void LevelType1::addTwoRowsOriginalBubbleAction(Bubble *obj, int i, int j)
+{
+	setDisable();
+	auto point = getPointByRowAndCol(i, j);
+	obj->setPosition(point);
+}
+void LevelType1::addTwoRowsRandomBubbleAction(Bubble *obj, int i, int j)
+{
+	setDisable();
+	auto point = getPointByRowAndCol(i, j);
+	auto start = Point(300.0f - i * BUBBLE_RADIUS * 2,point.y);
+	obj->setPosition(start);
+	auto moveTo = MoveTo::create(0.4f + j * 0.1f, point);
+	obj->runAction(Sequence::create(moveTo, CallFunc::create([=]() {setEnable(); }), nullptr));
+}
 void LevelType1::gameOver(bool over)
 {
 	auto gameSceme = (GameScene*)this->getParent();
