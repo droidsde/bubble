@@ -43,6 +43,7 @@ bool PropLayer::init()
 	bomb->addClickEventListener(CC_CALLBACK_1(PropLayer::menuBombCallBack,this));
 
 	auto bombText = (ui::TextBMFont*)bomb->getChildByTag(152);
+	UserData::getInstance()->setBomb(10);
 	bombText->setString(StringUtils::format("%d", UserData::getInstance()->getBomb()));
 
 
@@ -54,6 +55,7 @@ bool PropLayer::init()
 	auto colorBubble = (ui::ImageView*)_propLayer->getChildByTag(22);
 	colorBubble->addClickEventListener(CC_CALLBACK_1(PropLayer::menuColorBubbleCallBack,this));
 	auto colorBubbleText = (ui::TextBMFont*)colorBubble->getChildByTag(150);
+	UserData::getInstance()->setColorBubble(10);
 	colorBubbleText->setString(StringUtils::format("%d", UserData::getInstance()->getColorBubble()));
 
 	auto pauseMenu = (ui::Button*)_propLayer->getChildByTag(36);

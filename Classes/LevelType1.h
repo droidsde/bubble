@@ -45,10 +45,12 @@ private:
 	int sameGroup7 = 0;
 	int colorfulGroup = 0;
 	int commonGroup = 0;
+	string _boardStatus = "free";
 
 	EventListenerTouchOneByOne* _listener;
 	bool initTheBoard(int level);  //初始化关卡
 	Bubble *randomPaoPao(); //获取随机泡泡
+	Bubble *randomPaoPao(int num); //指定范围内获取随机泡泡
 	Point getPointByRowAndCol(int row, int col); //根据行列及是否左缺确定位置
 	Point getRowAndColByPoint(Point target);
 	void initWaitPaoPao(); //初始化等待的泡泡
@@ -58,6 +60,8 @@ private:
 	bool isCollideBorder();
 	bool checCollideBoard();
 	void changeWaitToReady();
+	void conditionsCheck();
+	bool checkRemainRows(int row);//检查棋盘上泡泡是否少于等于row行
 	void addTwoRows();
 	void correctReadyPosition();
 	bool getFirstRowFlag();
@@ -65,11 +69,13 @@ private:
 	void findTheSameBubble(int i, int j, bool flag, BubbleType type);
 	void findAGroup(int n1, int n2, int n3, int n4, int n5, int n6, int n7);
 	void bubbleBlast(int i, int j, bool flag);
+	void randomBombBlast(int i, int j, bool flag);
 	void moveTheBubble(int i, int j, bool flag, float distance);
 	void deleteTheSameBubble(int i, int j, bool flag);
 	void bubbleAction(Bubble *obj);
 	void callbackRemoveBubble(Node *obj);
 	void downBubbleActionCallBack(Node *obj);
+	void throwARandomBomb();
 	void jumpActionCallBack();
 	void resetAllPass();
 	void checkDownBubble();
@@ -78,6 +84,7 @@ private:
 	void initBubbleAction(Bubble *obj, int i, int j);
 	void addTwoRowsOriginalBubbleAction(Bubble *obj, int i, int j);
 	void addTwoRowsRandomBubbleAction(Bubble *obj, int i, int j);
+	//void throwARandomBombAction(int i, int j);
 	void gameOver(bool over = false);
 	void setReadyAngle(Point target);
 	void throwBallAction();

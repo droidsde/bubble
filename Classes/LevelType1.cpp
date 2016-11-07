@@ -114,7 +114,13 @@ Bubble * LevelType1::randomPaoPao()
 	pRet = Bubble::initWithType(type);
 	return pRet;
 }
-
+Bubble * LevelType1::randomPaoPao(int num)
+{
+	Bubble *pRet = NULL;
+	BubbleType type = static_cast<BubbleType>(rand() % num + 1);
+	pRet = Bubble::initWithType(type);
+	return pRet;
+}
 Point LevelType1::getPointByRowAndCol(int row, int col)
 {
 	bool flag = row % 2 == 0 ? true : false;
@@ -134,7 +140,7 @@ void LevelType1::initWaitPaoPao()
 {
 	for (int i = 0; i < MAX_WAIT_PAOPAO; ++i)
 	{
-		Bubble *obj = randomPaoPao();
+		Bubble *obj = randomPaoPao(3);
 		obj->setPosition(WAIT_PAOPAO_POS);
 		wait[i] = obj;
 		this->addChild(obj);
@@ -142,7 +148,7 @@ void LevelType1::initWaitPaoPao()
 }
 void LevelType1::initReadyPaoPao()
 {
-	ready = randomPaoPao();
+	ready = randomPaoPao(3);
 	ready->setPosition(READY_PAOPAO_POS);
 	this->addChild(ready);
 }
@@ -310,8 +316,33 @@ void LevelType1::changeWaitToReady()
 	auto seq = Sequence::create(jumpAction, callFunc, nullptr);
 
 	ready->runAction(seq);
+	conditionsCheck();
+}
+void LevelType1:: conditionsCheck()
+{
+	if (isPass() && _havePass == false)
+	{
+		_havePass = true;
+		setDisable();
+		auto gameScene = (GameScene*)this->getParent();
+		gameScene->_propLayer->setTime(60);
+
+		Armature* armature = Armature::create("paopaolong");
+		armature->getAnimation()->play("gongxiguoguan");
+		this->addChild(armature);
+		SimpleAudioEngine::getInstance()->playEffect("Music/Guoguan.mp3");
+		armature->setPosition(270, 580);
+		armature->getAnimation()->setMovementEventCallFunc(CC_CALLBACK_3(LevelType1::movementPassCallBack, this));
+	}
 
 	bubbleNumber++;
+	if (levelSettings[_level][1][0] == 1)//如有限泡泡数启用
+	{
+		if (bubbleNumber == levelSettings[_level][1][1])
+		{
+			gameOver(true);
+		}
+	}
 	if (levelSettings[_level][2][0] == 1)//如泡泡下降启用
 	{
 		if (bubbleNumber%levelSettings[_level][2][1] == 0)
@@ -319,67 +350,91 @@ void LevelType1::changeWaitToReady()
 			addTwoRows();
 		}
 	}
-
-}
-void LevelType1::addTwoRows()
-{
-	for (int j = 0; j < MAX_COLS-1; ++j)//如果bubble[9]不为空，则加行后游戏结束
+	if (levelSettings[_level][2][0] == 2)//如泡泡下降启用
 	{
-		if (board[9][j] == NULL)
+		if (checkRemainRows(levelSettings[_level][2][1]))
 		{
-			continue;
-		}
-		else
-		{
-			gameOver(true);
+			addTwoRows();
 		}
 	}
-	for (int i = MAX_ROWS-1; i >=2; i--)
+}
+bool LevelType1::checkRemainRows(int row)
+{
+	if (row < MAX_ROWS)
 	{
-		for (int j = 0; j < MAX_COLS; ++j)
+		for (int i = 0; i < MAX_COLS; i++)
 		{
-			if ((i % 2 && j == MAX_COLS - 1)||(board[i][j]==NULL&&board[i-2][j]==NULL))
+			if (row % 2 && i == (MAX_COLS - 1))
 			{
 				continue;
 			}
-			if (board[i][j] != NULL)
+			if (board[row][i] != NULL)
 			{
-				board[i][j]->removeFromParentAndCleanup(true);
-			}
-			board[i][j] = NULL;
-			if (board[i - 2][j] != NULL)
-			{
-				board[i][j] = Bubble::initWithType(board[i - 2][j]->getType());
-				board[i][j]->setFlag(board[i - 2][j]->getFlag());
-				addChild(board[i][j]);
-				addTwoRowsOriginalBubbleAction(board[i][j], i, j);
+				return false;
 			}
 		}
 	}
-	for (int j = 0; j < MAX_COLS; ++j)//bubble[0] Random
-	{
-		if (board[0][j] != NULL)
+	return true;
+}
+void LevelType1::addTwoRows()
+{
+		for (int j = 0; j < MAX_COLS - 1; ++j)//如果bubble[9]不为空，则加行后游戏结束
 		{
-			board[0][j]->removeFromParentAndCleanup(true);
+			if (board[9][j] == NULL)
+			{
+				continue;
+			}
+			else
+			{
+				gameOver(true);
+			}
 		}
-		board[0][j] = randomPaoPao();
-		bool flag = true;
-		board[0][j]->setFlag(flag);
-		addChild(board[0][j]);
-		addTwoRowsRandomBubbleAction(board[0][j], 0, j);
-	}
-	for (int j = 0; j < MAX_COLS-1; ++j)//bubble[1] Random
-	{
-		if (board[1][j] != NULL)
+		for (int i = MAX_ROWS - 1; i >= 2; i--)
 		{
-			board[1][j]->removeFromParentAndCleanup(true);
+			for (int j = 0; j < MAX_COLS; ++j)
+			{
+				if ((i % 2 && j == MAX_COLS - 1) || (board[i][j] == NULL&&board[i - 2][j] == NULL))
+				{
+					continue;
+				}
+				if (board[i][j] != NULL)
+				{
+					board[i][j]->removeFromParentAndCleanup(true);
+				}
+				board[i][j] = NULL;
+				if (board[i - 2][j] != NULL)
+				{
+					board[i][j] = Bubble::initWithType(board[i - 2][j]->getType());
+					board[i][j]->setFlag(board[i - 2][j]->getFlag());
+					addChild(board[i][j]);
+					addTwoRowsOriginalBubbleAction(board[i][j], i, j);
+				}
+			}
 		}
-		board[1][j] = randomPaoPao();
-		bool flag = false;
-		board[1][j]->setFlag(flag);
-		addChild(board[1][j]);
-		addTwoRowsRandomBubbleAction(board[1][j], 1, j);
-	}
+		for (int j = 0; j < MAX_COLS; ++j)//bubble[0] Random
+		{
+			if (board[0][j] != NULL)
+			{
+				board[0][j]->removeFromParentAndCleanup(true);
+			}
+			board[0][j] = randomPaoPao(3);
+			bool flag = true;
+			board[0][j]->setFlag(flag);
+			addChild(board[0][j]);
+			addTwoRowsRandomBubbleAction(board[0][j], 0, j);
+		}
+		for (int j = 0; j < MAX_COLS - 1; ++j)//bubble[1] Random
+		{
+			if (board[1][j] != NULL)
+			{
+				board[1][j]->removeFromParentAndCleanup(true);
+			}
+			board[1][j] = randomPaoPao(3);
+			bool flag = false;
+			board[1][j]->setFlag(flag);
+			addChild(board[1][j]);
+			addTwoRowsRandomBubbleAction(board[1][j], 1, j);
+		}
 }
 void LevelType1::correctReadyPosition()
 {
@@ -681,7 +736,53 @@ void LevelType1::bubbleBlast(int i, int j, bool flag)
 		board[i][j + 1] = nullptr;
 	}
 }
-
+void LevelType1::randomBombBlast(int i, int j, bool flag)
+{
+	bubbleAction(board[i][j]);
+	board[i][j] = nullptr;
+	if (flag && j > 0 && i > 0 && board[i - 1][j - 1]) {
+		bubbleAction(board[i - 1][j - 1]);
+		board[i - 1][j - 1] = nullptr;
+	}
+	else if (!flag && i > 0 && board[i - 1][j]) {
+		bubbleAction(board[i - 1][j]);
+		board[i - 1][j] = nullptr;
+	}
+	if (flag && i > 0 && board[i - 1][j]) {
+		bubbleAction(board[i - 1][j]);
+		board[i - 1][j] = nullptr;
+	}
+	else if (!flag && i > 0 && j < MAX_COLS - 1 && board[i - 1][j + 1]) {
+		bubbleAction(board[i - 1][j + 1]);
+		board[i - 1][j + 1] = nullptr;
+	}
+	if (flag && j > 0 && i < MAX_ROWS && board[i + 1][j - 1]) {
+		bubbleAction(board[i + 1][j - 1]);
+		board[i + 1][j - 1] = nullptr;
+	}
+	else if (!flag && i < MAX_ROWS && board[i + 1][j]) {
+		bubbleAction(board[i + 1][j]);
+		board[i + 1][j] = nullptr;
+	}
+	if (flag && i < MAX_ROWS && board[i + 1][j]) {
+		bubbleAction(board[i + 1][j]);
+		board[i + 1][j] = nullptr;
+	}
+	else if (!flag && i < MAX_ROWS && j < MAX_COLS - 1 && board[i + 1][j + 1]) {
+		bubbleAction(board[i + 1][j + 1]);
+		board[i + 1][j + 1] = nullptr;
+	}
+	if (j > 0 && board[i][j - 1])
+	{
+		bubbleAction(board[i][j - 1]);
+		board[i][j - 1] = nullptr;
+	}
+	if (j < MAX_COLS && board[i][j + 1])
+	{
+		bubbleAction(board[i][j + 1]);
+		board[i][j + 1] = nullptr;
+	}
+}
 void LevelType1::moveTheBubble(int i, int j, bool flag, float distance)
 {
 
@@ -785,6 +886,18 @@ void LevelType1::deleteTheSameBubble(int i, int j, bool flag)
 
 void LevelType1::bubbleAction(Bubble *obj)
 {
+	//道具爆炸改为与普通爆炸效果相同
+	waitTime += 0.05f;
+	SimpleAudioEngine::getInstance()->playEffect("Music/Remove.mp3");
+
+	ArmatureDataManager::getInstance()->addArmatureFileInfo("BubbleSpecial/baozha.ExportJson");
+	Armature* armature = Armature::create("baozha");
+	obj->addChild(armature);
+	armature->setPosition(BUBBLE_RADIUS, BUBBLE_RADIUS);
+	armature->getAnimation()->play("daojubaozha");
+	obj->runAction(Sequence::create(FadeOut::create(waitTime), CallFunc::create([=]() {obj->removeFromParent(); setEnable(); }), nullptr));
+	/*
+	//原普通消除式爆炸
 	auto gameSceme = (GameScene*)this->getParent();
 	gameSceme->_propLayer->AddScoreLabel(5);
 	SimpleAudioEngine::getInstance()->playEffect("Music/Remove.mp3");
@@ -793,10 +906,11 @@ void LevelType1::bubbleAction(Bubble *obj)
 
 
 
-// 	auto armature = (Armature*)(obj->getChildByTag(20));
-// 	armature->getAnimation()->play("daojubaozha");
+ 	auto armature = (Armature*)(obj->getChildByTag(20));
+ 	//armature->getAnimation()->play("daojubaozha");
 	//obj->runAction(Sequence::create(DelayTime::create(waitTime), CallFuncN::create(CC_CALLBACK_1(LevelType1::callbackRemoveBubble, this)),NULL));
 	obj->runAction(Sequence::create(FadeOut::create(waitTime), CallFunc::create([=](){obj->removeFromParent(); setEnable(); }), NULL));
+	*/
 }
 
 void LevelType1::callbackRemoveBubble(cocos2d::Node *obj)
@@ -851,7 +965,8 @@ void LevelType1::jumpActionCallBack()
 	{
 		wait[i] = wait[i + 1];
 	}
-	wait[MAX_WAIT_PAOPAO - 1] = randomPaoPao();
+	wait[MAX_WAIT_PAOPAO - 1] = randomPaoPao(3)
+		;
 	this->addChild(wait[MAX_WAIT_PAOPAO - 1], -1);
 	for (int i = 0; i < MAX_WAIT_PAOPAO; ++i)
 	{
@@ -917,6 +1032,7 @@ void LevelType1::checkDownBubble()
 
 void LevelType1::downBubble()
 {
+	int downNumber = 0;
 	int n1=0, n2=0, n3=0, n4=0, n5=0, n6=0, n7=0;//下坠泡泡中各种类型泡泡的数量
 	for (int i = 0; i < MAX_ROWS; ++i)
 	{
@@ -952,26 +1068,21 @@ void LevelType1::downBubble()
 				}
 				downBubbleAction(obj);
 				board[i][j] = NULL;
+				downNumber++;
 			}
 		}
 		setEnable();
 	}
-	findAGroup(n1,n2,n3,n4,n5,n6,n7);
-	if (isPass() && _havePass == false)
+	if (levelSettings[_level][3][0] == 1)//如启用坠落泡泡爆炸加成
 	{
-		_havePass = true;
-		setDisable();
-		auto gameScene = (GameScene*)this->getParent();
-		gameScene->_propLayer->setTime(60);
-
-		Armature* armature = Armature::create("paopaolong");
-		armature->getAnimation()->play("gongxiguoguan");
-		this->addChild(armature);
-		SimpleAudioEngine::getInstance()->playEffect("Music/Guoguan.mp3");
-		armature->setPosition(270, 580);
-		armature->getAnimation()->setMovementEventCallFunc(CC_CALLBACK_3(LevelType1::movementPassCallBack, this));
+		int x = levelSettings[_level][3][1];
+			for (int i = 0; i < downNumber/x; i++)
+			{
+				throwARandomBomb();
+			}
 	}
-	
+	findAGroup(n1,n2,n3,n4,n5,n6,n7);
+	conditionsCheck();
 }
 
 void LevelType1::downBubbleAction(Bubble *obj)
@@ -992,6 +1103,50 @@ void LevelType1::downBubbleActionCallBack(Node *obj)
 	particle->setPosition(bubble->getContentSize().width/2, 0);
 	bubble->addChild(particle);
 	bubble->runAction(Sequence::create(DelayTime::create(0.5f), FadeOut::create(0.1f), CallFunc::create([=](){ bubble->removeFromParentAndCleanup(true); }), nullptr));
+	//throwARandomBomb();
+}
+void LevelType1::throwARandomBomb()
+{
+	//if (_boardStatus != "free")
+	//{
+	//	while (_boardStatus != "free")
+	//	{
+	//	}
+	//}
+	bool isDone = false;
+	while (!isDone)
+	{
+		int notNullNumber = 0;
+		for (int i = MAX_ROWS - 1; i >= 0; i--)
+		{
+			for (int j = 0; j < MAX_COLS; j++)
+			{
+				if (i % 2 && (j = MAX_COLS - 1) || board[i][j] == NULL)
+				{
+					continue;
+				}
+				if (board[i][j]->getType() != BUBBLE_TYPE_BOMB&&board[i][j]->getType() != BUBBLE_TYPE_COLOR && board[i][j]->getIsPass()==true)
+				{
+					notNullNumber++;
+					if (rand() % 3 == 1 && isDone == false)
+					{	
+						//throwARandomBombAction(i, j);
+						bool flag = i%2 ? false:true;
+						randomBombBlast(i, j, flag);
+						isDone = true;
+						break;
+					}
+				}
+			}
+		}
+		if (notNullNumber == 0)
+		{
+			isDone = true;
+		}
+	}
+	resetAllPass();
+	checkDownBubble();
+	downBubble();
 }
 void LevelType1::initBubbleAction(Bubble *obj, int i, int j)
 {
@@ -1006,17 +1161,37 @@ void LevelType1::addTwoRowsOriginalBubbleAction(Bubble *obj, int i, int j)
 {
 	setDisable();
 	auto point = getPointByRowAndCol(i, j);
-	obj->setPosition(point);
+	auto start = Point(point.x, point.y+4*BUBBLE_RADIUS);
+	obj->setPosition(start);
+	auto moveTo = MoveTo::create(1.0f, point);
+	obj->runAction(Sequence::create(moveTo, CallFunc::create([=]() {setEnable(); }), nullptr));
 }
 void LevelType1::addTwoRowsRandomBubbleAction(Bubble *obj, int i, int j)
 {
 	setDisable();
 	auto point = getPointByRowAndCol(i, j);
-	auto start = Point(300.0f - i * BUBBLE_RADIUS * 2,point.y);
+	auto start = Point(point.x,point.y+4*BUBBLE_RADIUS);
 	obj->setPosition(start);
-	auto moveTo = MoveTo::create(0.4f + j * 0.1f, point);
+	auto moveTo = MoveTo::create(1.0f, point);
 	obj->runAction(Sequence::create(moveTo, CallFunc::create([=]() {setEnable(); }), nullptr));
 }
+/*
+void LevelType1::throwARandomBombAction(int i, int j)
+{
+	setDisable();
+	auto *s = Sprite::create();
+	s->initWithSpriteFrameName(BUBBLE_BOMB_NAME);
+	addChild(s);
+	auto point = getPointByRowAndCol(i, j);
+	auto start = Point(0, 0);
+	s->setPosition(start);
+	auto moveTo = MoveTo::create(0.5f, point);
+	s->runAction(Sequence::create(moveTo, CallFunc::create([=]() {
+	s->removeFromParentAndCleanup(true);
+	setEnable();
+	}), nullptr));
+}
+*/
 void LevelType1::gameOver(bool over)
 {
 	auto gameSceme = (GameScene*)this->getParent();
@@ -1104,7 +1279,7 @@ void LevelType1::throwBallAction()
 
 bool LevelType1::isPass()
 {
-	if (commonGroup >= 5)
+	if (commonGroup >= 10||colorfulGroup>=2&&sameGroup1>=2)
 		return true;
 	else
 		return false;
