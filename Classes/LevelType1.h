@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "Bubble.h"
+#include "PointObject.h"
 #include "GameConst.h"
 #include "GameEnum.h"
 #include "ui/CocosGUI.h"
@@ -45,8 +46,8 @@ private:
 	int sameGroup7 = 0;
 	int colorfulGroup = 0;
 	int commonGroup = 0;
-	string _boardStatus = "free";
 
+	bool* _boardAnimation=new bool(false);
 	EventListenerTouchOneByOne* _listener;
 	bool initTheBoard(int level);  //初始化关卡
 	Bubble *randomPaoPao(); //获取随机泡泡
@@ -70,12 +71,14 @@ private:
 	void findAGroup(int n1, int n2, int n3, int n4, int n5, int n6, int n7);
 	void bubbleBlast(int i, int j, bool flag);
 	void randomBombBlast(int i, int j, bool flag);
+	void randomBombBlastAction(Bubble *obj);
 	void moveTheBubble(int i, int j, bool flag, float distance);
 	void deleteTheSameBubble(int i, int j, bool flag);
 	void bubbleAction(Bubble *obj);
 	void callbackRemoveBubble(Node *obj);
 	void downBubbleActionCallBack(Node *obj);
-	void throwARandomBomb();
+	void findRandomBombPositions();
+	void throwRandomBombs();
 	void jumpActionCallBack();
 	void resetAllPass();
 	void checkDownBubble();
@@ -100,6 +103,8 @@ private:
 public:
 
 	Vector<Sprite*> _auxiliary;
+	Vector<PointObject*> _randomBombPositions;
+	Vector<PointObject*> _randomBombAnimationPositions;
 
 	void colorBubble();
 	void swapBubble();
