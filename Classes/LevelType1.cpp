@@ -558,6 +558,7 @@ bool LevelType1::getFirstRowFlag()  //得到第一行是否左缺 不缺为true
 	{
 		if (board[0][i]) return board[0][i]->getFlag();
 	}
+
 	return true;
 }
 
@@ -1212,6 +1213,15 @@ void LevelType1::initBubbleAction(Bubble *obj, int i, int j)
 	auto moveTo = MoveTo::create(0.4f + j * 0.1f, point);
 	obj->runAction(Sequence::create(moveTo, CallFunc::create([=](){setEnable(); }), nullptr));
 }
+void LevelType1::addAChannelAction(Bubble *obj, int i, int j,Bubble *temp)
+{
+	setDisable();
+	auto point = getPointByRowAndCol(i, j);
+	auto start = Point(0, 0);
+	obj->setPosition(start);
+	auto moveTo = MoveTo::create(0.2f, point);
+	obj->runAction(Sequence::create(DelayTime::create(2.2f),moveTo, CallFunc::create([=]() {temp->removeFromParentAndCleanup(true);temp->release(); setEnable(); }), nullptr));
+}
 void LevelType1::addTwoRowsOriginalBubbleAction(Bubble *obj, int i, int j)
 {
 	setDisable();
@@ -1323,7 +1333,36 @@ bool LevelType1::isPass()
 	else
 		return false;
 }
+//direction: 0=left,1=right
+void LevelType1::addAChannel(BubbleType type, int direction, int depth,int i,int j)
+{
+	while (board[i][j] != NULL&&depth!=0)
+	{
+		auto temp = board[i][j];
+		board[i][j]=Bubble::initWithType(type);
+		addChild(board[i][j]);
+		addAChannelAction(board[i][j], i, j,temp);
+		i--;
+		depth--;
+	}
+	i++;
+	while (j >= 0 && j <= MAX_COLS&&board[i][j] != NULL)
+	{
+		auto temp = board[i][j];
+		board[i][j] = Bubble::initWithType(type);
+		addChild(board[i][j]);
+		addAChannelAction(board[i][j], i, j, temp);
+		if (direction == 0)
+		{
+			j--;
+		}
+		else
+		{
+			j++;
+		}
+	}
 
+}
 bool LevelType1::onTouchBegan(Touch *touch, Event *unused_event)
 {
 	return true;
