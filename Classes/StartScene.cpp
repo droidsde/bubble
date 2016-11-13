@@ -1,5 +1,6 @@
 #include "StartScene.h"
 #include "GameScene.h"
+#include "LevelScene.h"
 #include "TurnplateLayer.h"
 #include "UserData.h"
 #include "GameConst.h"
@@ -112,7 +113,7 @@ void StartLayer::menuNewGameCallback(Ref* pSender)
 {
 	SimpleAudioEngine::getInstance()->playEffect("Music/Click.mp3");
 	SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
-	Director::getInstance()->pushScene(GameScene::create(0));
+	Director::getInstance()->pushScene(LevelLayer::scene());
 }
 
 void StartLayer::menuShopCallBack(Ref* pSender)

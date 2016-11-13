@@ -3,7 +3,7 @@
 #include "cocostudio/CocoStudio.h"
 #include "ui/CocosGUI.h"
 #include "UserData.h"
-#include "StartScene.h"
+#include "LevelScene.h"
 #include "GiftLayer.h"
 
 using namespace cocostudio::timeline;
@@ -52,5 +52,5 @@ void PauseLayer::menuGetCallBack(Ref* Psender)
 }
 void PauseLayer::menuHomeCallBack(Ref* Psender)
 {
-	Director::getInstance()->replaceScene(StartLayer::scene());
+	Director::getInstance()->replaceScene(LevelLayer::scene());
 }
