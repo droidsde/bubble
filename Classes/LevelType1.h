@@ -97,6 +97,10 @@ private:
 	void readyAction();
 	void addAChannel(BubbleType type,int direction,int depth,int i,int j);
 	void addAChannelAction(Bubble *obj, int i, int j,Bubble *temp);
+	void changeType(BubbleType from, BubbleType to);
+	void changeTypeAction(Bubble *obj, int i, int j, Bubble *temp);
+	void changeAllTypesBubblesToOneType(BubbleType targetType);
+	void changeAllTypesBubblesToOneTypeAction(Bubble *obj, int i, int j, Bubble *temp);
 
 	bool onTouchBegan(Touch *touch, Event *unused_event);
 	void onTouchMoved(Touch *touch, Event *unused_event);

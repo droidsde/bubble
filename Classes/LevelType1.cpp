@@ -1222,6 +1222,24 @@ void LevelType1::addAChannelAction(Bubble *obj, int i, int j,Bubble *temp)
 	auto moveTo = MoveTo::create(0.2f, point);
 	obj->runAction(Sequence::create(DelayTime::create(2.2f),moveTo, CallFunc::create([=]() {temp->removeFromParentAndCleanup(true);temp->release(); setEnable(); }), nullptr));
 }
+void LevelType1::changeTypeAction(Bubble *obj, int i, int j, Bubble *temp)
+{
+	setDisable();
+	auto point = getPointByRowAndCol(i, j);
+	auto start = Point(0, 0);
+	obj->setPosition(start);
+	auto moveTo = MoveTo::create(0.2f, point);
+	obj->runAction(Sequence::create(DelayTime::create(2.2f), moveTo, CallFunc::create([=]() {temp->removeFromParentAndCleanup(true); temp->release(); setEnable(); }), nullptr));
+}
+void LevelType1::changeAllTypesBubblesToOneTypeAction(Bubble *obj, int i, int j, Bubble *temp)
+{
+	setDisable();
+	auto point = getPointByRowAndCol(i, j);
+	auto start = Point(0, 0);
+	obj->setPosition(start);
+	auto moveTo = MoveTo::create(0.2f, point);
+	obj->runAction(Sequence::create(DelayTime::create(2.2f), moveTo, CallFunc::create([=]() {temp->removeFromParentAndCleanup(true); temp->release(); setEnable(); }), nullptr));
+}
 void LevelType1::addTwoRowsOriginalBubbleAction(Bubble *obj, int i, int j)
 {
 	setDisable();
@@ -1362,6 +1380,43 @@ void LevelType1::addAChannel(BubbleType type, int direction, int depth,int i,int
 		}
 	}
 
+}
+void LevelType1::changeType(BubbleType from, BubbleType to)
+{
+	for (int i = 0; i < MAX_ROWS; i++)
+	{
+		for (int j = 0; j < MAX_COLS; j++)
+		{
+			if (board[i][j] == NULL)
+			{
+				continue;
+			}
+			if (board[i][j] ->getType()==from)
+			{
+				auto temp = board[i][j];
+				board[i][j] = Bubble::initWithType(to);
+				addChild(board[i][j]);
+				changeTypeAction(board[i][j], i, j, temp);
+			}
+		}
+	}
+}
+void LevelType1::changeAllTypesBubblesToOneType(BubbleType targetType)
+{
+	for (int i = 0; i < MAX_ROWS; i++)
+	{
+		for (int j = 0; j < MAX_COLS; j++)
+		{
+			if (board[i][j] == NULL)
+			{
+				continue;
+			}
+				auto temp = board[i][j];
+				board[i][j] = Bubble::initWithType(targetType);
+				addChild(board[i][j]);
+				changeAllTypesBubblesToOneTypeAction(board[i][j], i, j, temp);
+		}
+	}
 }
 bool LevelType1::onTouchBegan(Touch *touch, Event *unused_event)
 {
