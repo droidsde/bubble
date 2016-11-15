@@ -7,6 +7,7 @@ using namespace cocostudio;
 
 Bubble::Bubble()//¹¹Ôìº¯Êý³õÊ¼»¯
 {
+	_attachment = NULL;
 	_flag = false;
 	_type = BUBBLE_TYPE_UNKNOW;
 	_isSame = false;
@@ -17,7 +18,6 @@ Bubble::Bubble()//¹¹Ôìº¯Êý³õÊ¼»¯
 
 Bubble::~Bubble()
 {
-
 }
 
 Bubble * Bubble::initWithType(BubbleType type) //¸ù¾Ý´«¹ýÀ´µÄÀàÐÍÀ´Éú³ÉÅÝÅÝ
@@ -25,7 +25,6 @@ Bubble * Bubble::initWithType(BubbleType type) //¸ù¾Ý´«¹ýÀ´µÄÀàÐÍÀ´Éú³ÉÅÝÅÝ
 	Bubble *pRet = Bubble::create();
 	pRet->setType(type);
 	pRet->initWithSpriteFrameName(getStringByType(type));
-
 
 
 
@@ -56,4 +55,16 @@ std::string Bubble::getStringByType(BubbleType type) //²»Í¬ÀàÐÍ»ñÈ¡²»Í¬µÄÍ¼Æ¬×ÊÔ
 		break;
 	}
 	return pRet;
+}
+
+Attachment* Bubble::getAttachment()
+{
+	return _attachment;
+}
+void Bubble::addAttachment(AttachmentType type)
+{
+	auto *attachment = Attachment::initWithType(type);
+	attachment->setPosition(this->getContentSize().width / 2, this->getContentSize().height / 2);
+	_attachment = attachment;
+	this->addChild(attachment);
 }

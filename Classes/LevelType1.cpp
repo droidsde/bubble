@@ -150,6 +150,7 @@ void LevelType1::initReadyPaoPao()
 {
 	ready = randomPaoPao(3);
 	ready->setPosition(READY_PAOPAO_POS);
+	ready->addAttachment(ATTACHMENT_SILVER);
 	this->addChild(ready);
 }
 void LevelType1::onTouch(Point target)
@@ -405,6 +406,10 @@ void LevelType1::addTwoRows()
 				if (board[i - 2][j] != NULL)
 				{
 					board[i][j] = Bubble::initWithType(board[i - 2][j]->getType());
+					if (board[i - 2][j]->getAttachment() != NULL)
+					{
+						board[i][j]->addAttachment(board[i - 2][j]->getAttachment()->getType());
+					}
 					board[i][j]->setFlag(board[i - 2][j]->getFlag());
 					addChild(board[i][j],1);
 					addTwoRowsOriginalBubbleAction(board[i][j], i, j);
@@ -1358,6 +1363,10 @@ void LevelType1::addAChannel(BubbleType type, int direction, int depth,int i,int
 	{
 		auto temp = board[i][j];
 		board[i][j]=Bubble::initWithType(type);
+		if (temp->getAttachment() != NULL)
+		{
+			board[i][j]->addAttachment(temp->getAttachment()->getType());
+		}
 		addChild(board[i][j]);
 		addAChannelAction(board[i][j], i, j,temp);
 		i--;
@@ -1395,6 +1404,10 @@ void LevelType1::changeType(BubbleType from, BubbleType to)
 			{
 				auto temp = board[i][j];
 				board[i][j] = Bubble::initWithType(to);
+				if (temp->getAttachment() != NULL)
+				{
+					board[i][j]->addAttachment(temp->getAttachment()->getType());
+				}
 				addChild(board[i][j]);
 				changeTypeAction(board[i][j], i, j, temp);
 			}
@@ -1413,6 +1426,10 @@ void LevelType1::changeAllTypesBubblesToOneType(BubbleType targetType)
 			}
 				auto temp = board[i][j];
 				board[i][j] = Bubble::initWithType(targetType);
+				if (temp->getAttachment() != NULL)
+				{
+					board[i][j]->addAttachment(temp->getAttachment()->getType());
+				}
 				addChild(board[i][j]);
 				changeAllTypesBubblesToOneTypeAction(board[i][j], i, j, temp);
 		}

@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "Bubble.h"
+#include "Attachment.h"
 #include "PointObject.h"
 #include "GameConst.h"
 #include "GameEnum.h"

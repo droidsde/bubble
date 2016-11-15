@@ -14,6 +14,11 @@ enum BubbleType{
 	BUBBLE_TYPE_BOMB,
 };
 
+enum AttachmentType {
+	ATTACHMENT_SILVER,
+	ATTACHMENT_GOLD
+};
+
 enum GameLevel
 {
 	GAME_LEVEL_1,
