@@ -61,6 +61,7 @@ bool LevelType1::init(int level)
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(_listener, this);
 
 	initTheBoard(_level);
+	initAttachments(_level);
 	initWaitPaoPao();
 	initReadyPaoPao();
 	
@@ -106,7 +107,267 @@ bool LevelType1::initTheBoard(int level)
 
 	return bRet;
 }
+bool LevelType1::initAttachments(int level)
+{
+	bool bRet = false;
+	for (int i = 0; i < MAX_ROWS; i++)
+	{
+		for (int j = 0; j < MAX_COLS; ++j)
+		{
+			if (board[i][j]==NULL || attachments[level][i][j] == -1)
+			{
+				continue;
+			}
+			board[i][j]->addAttachment((AttachmentType)attachments[level][i][j]);
+		}
+	}
 
+	return bRet;
+}
+void LevelType1::moveGhosts()
+{
+	for (int i = 0; i < MAX_ROWS; i++)
+	{
+		for (int j = 0; j < MAX_COLS; ++j)
+		{
+			if (board[i][j] == NULL || board[i][j]->getAttachment()==NULL)
+			{
+				continue;
+			}
+			if (board[i][j]->getAttachment()->getType() == ATTACHMENT_GHOST&&board[i][j]->getAttachment()->getHasMoved() == false)
+			{
+				//创建目的位置数组
+				Vector<Bubble*> nearbyBubble;
+				if (board[i][j]->getFlag() == true)//非左缺
+				{
+					if (i-1>=0&&j-1>=0&&board[i-1][j-1]!=NULL)
+					{
+						nearbyBubble.pushBack(board[i - 1][j - 1]);
+					}
+					if (i - 1 >= 0&& j!=MAX_COLS && board[i - 1][j] != NULL)
+					{
+						nearbyBubble.pushBack(board[i - 1][j]);
+					}
+					if (j - 1 >= 0 && board[i][j-1] != NULL)
+					{
+						nearbyBubble.pushBack(board[i][j - 1]);
+					}
+					if (j + 1 <= MAX_COLS && j+1 <= MAX_COLS  && board[i][j+1] != NULL)
+					{
+						nearbyBubble.pushBack(board[i][j + 1]);
+					}
+					if (i+1<=MAX_ROWS && j - 1 >=0 && board[i+1][j - 1] != NULL)
+					{
+						nearbyBubble.pushBack(board[i + 1][j - 1]);
+					}
+					if (i + 1 <= MAX_ROWS && j != MAX_COLS  && board[i+1][j] != NULL)
+					{
+						nearbyBubble.pushBack(board[i + 1][j]);
+					}
+				}
+				else//左缺
+				{
+					if (i - 1 >= 0 && board[i - 1][j] != NULL)
+					{
+						nearbyBubble.pushBack(board[i - 1][j]);
+					}
+					if (i - 1 >= 0 && board[i - 1][j+1] != NULL)
+					{
+						nearbyBubble.pushBack(board[i - 1][j + 1]);
+					}
+					if (j - 1 >= 0 && board[i][j - 1] != NULL)
+					{
+						nearbyBubble.pushBack(board[i][j - 1]);
+					}
+					if (board[i][j + 1] != NULL)
+					{
+						nearbyBubble.pushBack(board[i][j + 1]);
+					}
+					if (i+1<=MAX_ROWS&&board[i+1][j] != NULL)
+					{
+						nearbyBubble.pushBack(board[i + 1][j]);
+					}
+					if (i + 1 <= MAX_ROWS&&board[i + 1][j+1] != NULL)
+					{
+						nearbyBubble.pushBack(board[i + 1][j + 1]);
+					}
+				}
+				//开始移动
+				auto *targetBubble = nearbyBubble.at(rand() % nearbyBubble.size());
+				targetBubble->addAttachment(ATTACHMENT_GHOST);
+				board[i][j]->removeAttachment();
+				targetBubble->getAttachment()->setHasMoved(true);
+				//
+				/*
+				//此函数为替代函数， 但有问题。  在原始函数有错误时创建 但后来原始函数被修复 所以停止修复此替代函数
+				//检查Bubble周边状态
+				int nearbyBubbleStatus[7] = {0,0,0,0,0,0,0};//第一位代表Bubble Flag 第二位至第六位分别代表Bubble左上右上左右左下右下是否有Bubble
+				if (board[i][j]->getFlag() == true)//非左缺
+				{
+					nearbyBubbleStatus[0] = 1;
+					if (i - 1 >= 0 && j - 1 >= 0 && board[i - 1][j - 1] != NULL)
+					{
+						nearbyBubbleStatus[1]=1;
+					}
+					if (i - 1 >= 0 && j != MAX_COLS && board[i - 1][j] != NULL)
+					{
+						nearbyBubbleStatus[2] = 1;
+					}
+					if (j - 1 >= 0 && board[i][j - 1] != NULL)
+					{
+						nearbyBubbleStatus[3] = 1;
+					}
+					if (j + 1 <= MAX_COLS && j + 1 <= MAX_COLS  && board[i][j + 1] != NULL)
+					{
+						nearbyBubbleStatus[4] = 1;
+					}
+					if (i + 1 <= MAX_ROWS && j - 1 >= 0 && board[i + 1][j - 1] != NULL)
+					{
+						nearbyBubbleStatus[5] = 1;
+					}
+					if (i + 1 <= MAX_ROWS && j != MAX_COLS  && board[i + 1][j] != NULL)
+					{
+						nearbyBubbleStatus[6] = 1;
+					}
+				}
+				else//左缺
+				{
+					nearbyBubbleStatus[0] = 0;
+					if (i - 1 >= 0 && board[i - 1][j] != NULL)
+					{
+						nearbyBubbleStatus[1] = 1;
+					}
+					if (i - 1 >= 0 && board[i - 1][j + 1] != NULL)
+					{
+						nearbyBubbleStatus[2] = 1;
+					}
+					if (j - 1 >= 0 && board[i][j - 1] != NULL)
+					{
+						nearbyBubbleStatus[3] = 1;
+					}
+					if (board[i][j + 1] != NULL)
+					{
+						nearbyBubbleStatus[4] = 1;
+					}
+					if (i + 1 <= MAX_ROWS&&board[i + 1][j] != NULL)
+					{
+						nearbyBubbleStatus[5] = 1;
+					}
+					if (i + 1 <= MAX_ROWS&&board[i + 1][j + 1] != NULL)
+					{
+						nearbyBubbleStatus[6] = 1;
+					}
+				}
+				//选择移动位置 targetPostion  1-6分别代表左上 右上 左 右 左下 右下
+				int targetPositionNumber = 0;
+				for (int i = 1; i < 7; i++)//除去Flag位，所以i=1
+				{
+					if (nearbyBubbleStatus[i] == 1)
+					{
+						targetPositionNumber++;
+					}
+				}
+				int randNumber = rand() % targetPositionNumber+1;
+				int notNullDigit = 0;
+				int targetPosition=0;
+				for (int i = 1; i < 7; i++)//注意 i起始为1
+				{
+					if (nearbyBubbleStatus[i] == 1)
+					{
+						notNullDigit++;
+					}
+					if (notNullDigit == randNumber)
+					{
+						targetPosition = i;
+						break;
+					}
+				}
+				//开始移动
+				if (targetPosition != 0)
+				{
+					if (nearbyBubbleStatus[0] == 1)//Flag=true
+					{
+						switch (targetPosition)
+						{
+						case 1:
+							board[i - 1][j - 1]->addAttachment(ATTACHMENT_GHOST);
+							board[i][j]->removeAttachment();
+								break;
+						case 2:
+							board[i - 1][j]->addAttachment(ATTACHMENT_GHOST);
+							board[i][j]->removeAttachment();
+							break;
+						case 3:
+							board[i][j - 1]->addAttachment(ATTACHMENT_GHOST);
+							board[i][j]->removeAttachment();
+							break;
+						case 4:
+							board[i][j+1]->addAttachment(ATTACHMENT_GHOST);
+							board[i][j]->removeAttachment();
+							break;
+						case 5:
+							board[i +1][j - 1]->addAttachment(ATTACHMENT_GHOST);
+							board[i][j]->removeAttachment();
+							break;
+						case 6:
+							board[i + 1][j]->addAttachment(ATTACHMENT_GHOST);
+							board[i][j]->removeAttachment();
+							break;
+						}
+					}
+					else//Flag=false
+					{
+						switch (targetPosition)
+						{
+						case 1:
+							board[i - 1][j]->addAttachment(ATTACHMENT_GHOST);
+							board[i][j]->removeAttachment();
+							break;
+						case 2:
+							board[i - 1][j + 1]->addAttachment(ATTACHMENT_GHOST);
+							board[i][j]->removeAttachment();
+							break;
+						case 3:
+							board[i][j - 1]->addAttachment(ATTACHMENT_GHOST);
+							board[i][j]->removeAttachment();
+							break;
+						case 4:
+							board[i][j + 1]->addAttachment(ATTACHMENT_GHOST);
+							board[i][j]->removeAttachment();
+							break;
+						case 5:
+							board[i + 1][j]->addAttachment(ATTACHMENT_GHOST);
+							board[i][j]->removeAttachment();
+							break;
+						case 6:
+							board[i +1][j +1]->addAttachment(ATTACHMENT_GHOST);
+							board[i][j]->removeAttachment();
+							break;
+						}
+					}
+				}
+				*/
+				
+			}
+
+		}
+	}
+	resetHasMoved();
+}
+void LevelType1::resetHasMoved()
+{
+	for (int i = 0; i < MAX_ROWS; i++)
+	{
+		for (int j = 0; j < MAX_COLS; ++j)
+		{
+			if (board[i][j] == NULL || board[i][j]->getAttachment()==NULL)
+			{
+				continue;
+			}
+			board[i][j]->getAttachment()->setHasMoved(false);
+		}
+	}
+}
 Bubble * LevelType1::randomPaoPao()
 {
 	Bubble *pRet = NULL;
@@ -150,7 +411,6 @@ void LevelType1::initReadyPaoPao()
 {
 	ready = randomPaoPao(3);
 	ready->setPosition(READY_PAOPAO_POS);
-	ready->addAttachment(ATTACHMENT_SILVER);
 	this->addChild(ready);
 }
 void LevelType1::onTouch(Point target)
@@ -555,6 +815,7 @@ void LevelType1::readyAction()
 	downBubble();
 	throwBallAction();
 	changeWaitToReady();
+	moveGhosts();
 	//ready = NULL;
 }
 bool LevelType1::getFirstRowFlag()  //得到第一行是否左缺 不缺为true

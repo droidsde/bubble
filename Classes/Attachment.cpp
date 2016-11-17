@@ -8,6 +8,7 @@ using namespace cocostudio;
 Attachment::Attachment()//构造函数初始化
 {
 	_type = ATTACHMENT_SILVER;
+	_hasMoved = false;
 
 }
 
@@ -15,7 +16,6 @@ Attachment::~Attachment()
 {
 
 }
-
 Attachment * Attachment::initWithType(AttachmentType type) //根据传过来的类型来生成附着物
 {
 	Attachment *pRet = Attachment::create();

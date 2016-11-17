@@ -19,7 +19,11 @@ Bubble::Bubble()//构造函数初始化
 Bubble::~Bubble()
 {
 }
-
+void Bubble::removeAttachment()
+{
+	_attachment->removeFromParentAndCleanup(true);
+	_attachment = NULL;
+}
 Bubble * Bubble::initWithType(BubbleType type) //根据传过来的类型来生成泡泡
 {
 	Bubble *pRet = Bubble::create();

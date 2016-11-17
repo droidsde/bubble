@@ -15,6 +15,7 @@ public:
 	CREATE_FUNC(Bubble);
 	Attachment* _attachment;
 	Attachment* getAttachment();
+	void removeAttachment();
 	void addAttachment(AttachmentType type);
 	CC_SYNTHESIZE(BubbleType, _type, Type);//泡泡的类型
 	CC_SYNTHESIZE(bool, _isSame, IsSame); //判断是否是统一类型的

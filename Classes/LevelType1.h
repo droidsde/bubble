@@ -51,6 +51,7 @@ private:
 	bool* _boardAnimation=new bool(false);
 	EventListenerTouchOneByOne* _listener;
 	bool initTheBoard(int level);  //初始化关卡
+	bool initAttachments(int level);  //初始化附着物
 	Bubble *randomPaoPao(); //获取随机泡泡
 	Bubble *randomPaoPao(int num); //指定范围内获取随机泡泡
 	Point getPointByRowAndCol(int row, int col); //根据行列及是否左缺确定位置
@@ -102,6 +103,8 @@ private:
 	void changeTypeAction(Bubble *obj, int i, int j, Bubble *temp);
 	void changeAllTypesBubblesToOneType(BubbleType targetType);
 	void changeAllTypesBubblesToOneTypeAction(Bubble *obj, int i, int j, Bubble *temp);
+	void moveGhosts();
+	void resetHasMoved();
 
 	bool onTouchBegan(Touch *touch, Event *unused_event);
 	void onTouchMoved(Touch *touch, Event *unused_event);

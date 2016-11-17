@@ -12,7 +12,8 @@ public:
 	~Attachment();
 	static Attachment *initWithType(AttachmentType type = ATTACHMENT_SILVER);
 	CREATE_FUNC(Attachment);
-	CC_SYNTHESIZE(AttachmentType, _type, Type);//
+	CC_SYNTHESIZE(AttachmentType, _type, Type);
+	CC_SYNTHESIZE(bool, _hasMoved, HasMoved);
 private:
 	//static std::string getStringByType(AttachmentType type);
 };
