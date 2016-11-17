@@ -134,7 +134,7 @@ void LevelType1::moveGhosts()
 			{
 				continue;
 			}
-			if (board[i][j]->getAttachment()->getType() == ATTACHMENT_GHOST&&board[i][j]->getAttachment()->getHasMoved() == false)
+			if (board[i][j]->getAttachment()->getType() == ATTACHMENT_GHOST&&board[i][j]->getAttachment()->getHasMoved() == false&& board[i][j]->getAttachment()->getStepStatus()==0)
 			{
 				//创建目的位置数组
 				Vector<Bubble*> nearbyBubble;
@@ -353,6 +353,57 @@ void LevelType1::moveGhosts()
 		}
 	}
 	resetHasMoved();
+}
+void LevelType1::updateGhostsStatus()
+{
+	for (int i = 0; i < MAX_ROWS; i++)
+	{
+		for (int j = 0; j < MAX_COLS; ++j)
+		{
+			if (board[i][j] == NULL || board[i][j]->getAttachment() == NULL)
+			{
+				continue;
+			}
+			if (board[i][j]->getType()==BUBBLE_TYPE_STONE&&board[i][j]->getAttachment()->getType() == ATTACHMENT_GHOST)
+			{
+				board[i][j]->getAttachment()->setStepStatus(0);
+				continue;
+			}
+			if (board[i][j]->getAttachment()->getType() == ATTACHMENT_GHOST)
+			{
+				int stepStatus=board[i][j]->getAttachment()->getStepStatus();
+				stepStatus++;
+				board[i][j]->getAttachment()->setStepStatus(stepStatus);
+			}
+		}
+	}
+}
+
+void LevelType1::ghostsMagic()
+{
+	for (int i = 0; i < MAX_ROWS; i++)
+	{
+		for (int j = 0; j < MAX_COLS; ++j)
+		{
+			if (board[i][j] == NULL || board[i][j]->getAttachment() == NULL)
+			{
+				continue;
+			}
+			if (board[i][j]->getAttachment()->getType() == ATTACHMENT_GHOST&&board[i][j]->getAttachment()->getStepStatus()==3)
+			{
+				//magic start
+				auto* temp = board[i][j];
+				board[i][j] = Bubble::initWithBubbleType(BUBBLE_TYPE_STONE);
+				board[i][j]->setFlag(temp->getFlag());
+				board[i][j]->setPosition(temp->getPosition());
+				board[i][j]->addAttachment(temp->getAttachment());
+				temp->removeFromParentAndCleanup(true);
+				addChild(board[i][j]);
+				//
+				board[i][j]->getAttachment()->setStepStatus(-1);
+			}
+		}
+	}
 }
 void LevelType1::resetHasMoved()
 {
@@ -577,7 +628,13 @@ void LevelType1::changeWaitToReady()
 	auto seq = Sequence::create(jumpAction, callFunc, nullptr);
 
 	ready->runAction(seq);
-	conditionsCheck();
+}
+void LevelType1::stepUpdate()
+{
+	_bubbleNumber++;
+	updateGhostsStatus();
+	moveGhosts();
+	ghostsMagic();
 }
 void LevelType1:: conditionsCheck()
 {
@@ -595,18 +652,16 @@ void LevelType1:: conditionsCheck()
 		armature->setPosition(270, 580);
 		armature->getAnimation()->setMovementEventCallFunc(CC_CALLBACK_3(LevelType1::movementPassCallBack, this));
 	}
-
-	bubbleNumber++;
 	if (levelSettings[_level][1][0] == 1)//如有限泡泡数启用
 	{
-		if (bubbleNumber == levelSettings[_level][1][1])
+		if (_bubbleNumber == levelSettings[_level][1][1])
 		{
 			gameOver(true);
 		}
 	}
 	if (levelSettings[_level][2][0] == 1)//如泡泡下降启用
 	{
-		if (bubbleNumber%levelSettings[_level][2][1] == 0)
+		if (_bubbleNumber%levelSettings[_level][2][1] == 0)
 		{
 			addTwoRows();
 		}
@@ -665,10 +720,33 @@ void LevelType1::addTwoRows()
 				board[i][j] = NULL;
 				if (board[i - 2][j] != NULL)
 				{
-					board[i][j] = Bubble::initWithType(board[i - 2][j]->getType());
+					/////////////////////////////////////////////////////////
+					////////////////////////////////////////////////////////
+					////////////////////////////////////////////////////////
+					////////////////////////////////////////////////////////
+					/////////////////////////////////////////////////////////
+					/////////////////////////////////////////////////////////
+					///////////////////////////////////////////////////////////
+					/////////////////////////////////////////////////////////
+					///////////////////Technical Debt//////////////////////////
+					///////////////////////////////////////////////////////////
+					///////////////////////////////////////////////////////////
+					/////////////////////////////////////////////////////////
+					/////////////////////////////////////////////////////////
+					////////////////////////////////////////////////////////
+					////////////////////////////////////////////////////////
+					////////////////////////////////////////////////////////
+					if (board[i-2][j]->getType() == BUBBLE_TYPE_STONE)///////暂时使用文件初始化新类型BUBBLE!!!!!!!!!!!!!!!!!!
+					{
+						board[i][j] = Bubble::initWithBubbleType(board[i - 2][j]->getType());
+					}
+					else
+					{
+						board[i][j] = Bubble::initWithType(board[i - 2][j]->getType());
+					}
 					if (board[i - 2][j]->getAttachment() != NULL)
 					{
-						board[i][j]->addAttachment(board[i - 2][j]->getAttachment()->getType());
+						board[i][j]->addAttachment(board[i - 2][j]->getAttachment());
 					}
 					board[i][j]->setFlag(board[i - 2][j]->getFlag());
 					addChild(board[i][j],1);
@@ -809,13 +887,14 @@ void LevelType1::readyAction()
 		findTheSameBubble(row, col, tempFlag, board[row][col]->getType());
 		deleteTheSameBubble(row, col, tempFlag);
 	}
+	stepUpdate();
 	resetAllPass();
 	checkDownBubble();
 	findRandomBombPositions();
 	downBubble();
 	throwBallAction();
 	changeWaitToReady();
-	moveGhosts();
+	conditionsCheck();
 	//ready = NULL;
 }
 bool LevelType1::getFirstRowFlag()  //得到第一行是否左缺 不缺为true
@@ -1626,7 +1705,7 @@ void LevelType1::addAChannel(BubbleType type, int direction, int depth,int i,int
 		board[i][j]=Bubble::initWithType(type);
 		if (temp->getAttachment() != NULL)
 		{
-			board[i][j]->addAttachment(temp->getAttachment()->getType());
+			board[i][j]->addAttachment(temp->getAttachment());
 		}
 		addChild(board[i][j]);
 		addAChannelAction(board[i][j], i, j,temp);
@@ -1667,7 +1746,7 @@ void LevelType1::changeType(BubbleType from, BubbleType to)
 				board[i][j] = Bubble::initWithType(to);
 				if (temp->getAttachment() != NULL)
 				{
-					board[i][j]->addAttachment(temp->getAttachment()->getType());
+					board[i][j]->addAttachment(temp->getAttachment());
 				}
 				addChild(board[i][j]);
 				changeTypeAction(board[i][j], i, j, temp);
@@ -1689,7 +1768,7 @@ void LevelType1::changeAllTypesBubblesToOneType(BubbleType targetType)
 				board[i][j] = Bubble::initWithType(targetType);
 				if (temp->getAttachment() != NULL)
 				{
-					board[i][j]->addAttachment(temp->getAttachment()->getType());
+					board[i][j]->addAttachment(temp->getAttachment());
 				}
 				addChild(board[i][j]);
 				changeAllTypesBubblesToOneTypeAction(board[i][j], i, j, temp);

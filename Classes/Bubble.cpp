@@ -30,13 +30,16 @@ Bubble * Bubble::initWithType(BubbleType type) //根据传过来的类型来生成泡泡
 	pRet->setType(type);
 	pRet->initWithSpriteFrameName(getStringByType(type));
 
-
-
-
+	return pRet;
+}
+Bubble * Bubble::initWithBubbleType(BubbleType type) //根据传过来的类型来生成泡泡（使用InitWithFile）
+{
+	Bubble *pRet = Bubble::create();
+	pRet->setType(type);
+	pRet->initWithFile(StringUtils::format("Bubble/%d.png", (int)type));
 
 	return pRet;
 }
-
 
 
 std::string Bubble::getStringByType(BubbleType type) //不同类型获取不同的图片资源
@@ -71,4 +74,13 @@ void Bubble::addAttachment(AttachmentType type)
 	attachment->setPosition(this->getContentSize().width / 2, this->getContentSize().height / 2);
 	_attachment = attachment;
 	this->addChild(attachment);
+}
+void Bubble::addAttachment(Attachment* attachment)
+{
+	auto *newAttach = Attachment::initWithType(attachment->getType());
+	newAttach->setHasMoved(attachment->getHasMoved());
+	newAttach->setStepStatus(attachment->getStepStatus());
+	newAttach->setPosition(this->getContentSize().width / 2, this->getContentSize().height / 2);
+	_attachment = newAttach;
+	this->addChild(newAttach);
 }

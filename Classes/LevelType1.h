@@ -36,7 +36,7 @@ private:
 	
 	CC_SYNTHESIZE(Vec2, real, Real);
 	CC_SYNTHESIZE(int, _level, Level);
-	int bubbleNumber = 0;
+	int _bubbleNumber = 0;
 	bool _havePass = false;
 	int sameGroup1 = 0;
 	int sameGroup2 = 0;
@@ -105,6 +105,9 @@ private:
 	void changeAllTypesBubblesToOneTypeAction(Bubble *obj, int i, int j, Bubble *temp);
 	void moveGhosts();
 	void resetHasMoved();
+	void stepUpdate();
+	void updateGhostsStatus();
+	void ghostsMagic();
 
 	bool onTouchBegan(Touch *touch, Event *unused_event);
 	void onTouchMoved(Touch *touch, Event *unused_event);
