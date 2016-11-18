@@ -108,6 +108,8 @@ private:
 	void stepUpdate();
 	void updateGhostsStatus();
 	void ghostsMagic();
+	void ghostsLeaveStone(Bubble* obj);
+	void ghostsUpdateAction(Bubble *obj);
 
 	bool onTouchBegan(Touch *touch, Event *unused_event);
 	void onTouchMoved(Touch *touch, Event *unused_event);

@@ -136,67 +136,81 @@ void LevelType1::moveGhosts()
 			}
 			if (board[i][j]->getAttachment()->getType() == ATTACHMENT_GHOST&&board[i][j]->getAttachment()->getHasMoved() == false&& board[i][j]->getAttachment()->getStepStatus()==0)
 			{
+				if (board[i][j]->getType() == BUBBLE_TYPE_STONE&&board[i][j]->getAttachment()->getHasWorked()==false)
+				{
+					ghostsLeaveStone(board[i][j]);
+					continue;
+				}
 				//创建目的位置数组
 				Vector<Bubble*> nearbyBubble;
 				if (board[i][j]->getFlag() == true)//非左缺
 				{
-					if (i-1>=0&&j-1>=0&&board[i-1][j-1]!=NULL)
+					if (i-1>=0&&j-1>=0&&board[i-1][j-1]!=NULL&&board[i-1][j-1]->getType()!=BUBBLE_TYPE_STONE)
 					{
 						nearbyBubble.pushBack(board[i - 1][j - 1]);
 					}
-					if (i - 1 >= 0&& j!=MAX_COLS && board[i - 1][j] != NULL)
+					if (i - 1 >= 0&& j!=MAX_COLS && board[i - 1][j] != NULL&&board[i - 1][j]->getType() != BUBBLE_TYPE_STONE)
 					{
 						nearbyBubble.pushBack(board[i - 1][j]);
 					}
-					if (j - 1 >= 0 && board[i][j-1] != NULL)
+					if (j - 1 >= 0 && board[i][j-1] != NULL&&board[i][j-1]->getType() != BUBBLE_TYPE_STONE)
 					{
 						nearbyBubble.pushBack(board[i][j - 1]);
 					}
-					if (j + 1 <= MAX_COLS && j+1 <= MAX_COLS  && board[i][j+1] != NULL)
+					if (j + 1 <= MAX_COLS && j+1 <= MAX_COLS  && board[i][j+1] != NULL&&board[i][j+1]->getType() != BUBBLE_TYPE_STONE)
 					{
 						nearbyBubble.pushBack(board[i][j + 1]);
 					}
-					if (i+1<=MAX_ROWS && j - 1 >=0 && board[i+1][j - 1] != NULL)
+					if (i+1<=MAX_ROWS && j - 1 >=0 && board[i+1][j - 1] != NULL&&board[i +1][j-1]->getType() != BUBBLE_TYPE_STONE)
 					{
 						nearbyBubble.pushBack(board[i + 1][j - 1]);
 					}
-					if (i + 1 <= MAX_ROWS && j != MAX_COLS  && board[i+1][j] != NULL)
+					if (i + 1 <= MAX_ROWS && j != MAX_COLS  && board[i+1][j] != NULL&&board[i + 1][j]->getType() != BUBBLE_TYPE_STONE)
 					{
 						nearbyBubble.pushBack(board[i + 1][j]);
 					}
 				}
 				else//左缺
 				{
-					if (i - 1 >= 0 && board[i - 1][j] != NULL)
+					if (i - 1 >= 0 && board[i - 1][j] != NULL&&board[i - 1][j]->getType() != BUBBLE_TYPE_STONE)
 					{
 						nearbyBubble.pushBack(board[i - 1][j]);
 					}
-					if (i - 1 >= 0 && board[i - 1][j+1] != NULL)
+					if (i - 1 >= 0 && board[i - 1][j+1] != NULL&&board[i - 1][j+1]->getType() != BUBBLE_TYPE_STONE)
 					{
 						nearbyBubble.pushBack(board[i - 1][j + 1]);
 					}
-					if (j - 1 >= 0 && board[i][j - 1] != NULL)
+					if (j - 1 >= 0 && board[i][j - 1] != NULL&&board[i][j-1]->getType() != BUBBLE_TYPE_STONE)
 					{
 						nearbyBubble.pushBack(board[i][j - 1]);
 					}
-					if (board[i][j + 1] != NULL)
+					if (board[i][j + 1] != NULL&&board[i][j+1]->getType() != BUBBLE_TYPE_STONE)
 					{
 						nearbyBubble.pushBack(board[i][j + 1]);
 					}
-					if (i+1<=MAX_ROWS&&board[i+1][j] != NULL)
+					if (i+1<=MAX_ROWS&&board[i+1][j] != NULL&&board[i + 1][j]->getType() != BUBBLE_TYPE_STONE)
 					{
 						nearbyBubble.pushBack(board[i + 1][j]);
 					}
-					if (i + 1 <= MAX_ROWS&&board[i + 1][j+1] != NULL)
+					if (i + 1 <= MAX_ROWS&&board[i + 1][j+1] != NULL&&board[i + 1][j+1]->getType() != BUBBLE_TYPE_STONE)
 					{
 						nearbyBubble.pushBack(board[i + 1][j + 1]);
 					}
 				}
 				//开始移动
-				auto *targetBubble = nearbyBubble.at(rand() % nearbyBubble.size());
-				targetBubble->addAttachment(ATTACHMENT_GHOST);
-				board[i][j]->removeAttachment();
-				targetBubble->getAttachment()->setHasMoved(true);
+				if (nearbyBubble.size() != 0)
+				{
+					auto *targetBubble = nearbyBubble.at(rand() % nearbyBubble.size());
+					targetBubble->addAttachment(ATTACHMENT_GHOST);
+					board[i][j]->removeAttachment();
+					targetBubble->getAttachment()->setHasMoved(true);
+					//targetBubble->getAttachment()->setHasWorked(false); //此句可省略
+				}
+				else
+				{
+						ghostsLeaveStone(board[i][j]);
+						continue;
+				}
 				//
 				/*
 				//此函数为替代函数， 但有问题。  在原始函数有错误时创建 但后来原始函数被修复 所以停止修复此替代函数
@@ -354,6 +368,34 @@ void LevelType1::moveGhosts()
 	}
 	resetHasMoved();
 }
+
+void LevelType1::ghostsLeaveStone(Bubble* obj)
+{
+	Vector<Bubble*> availableBubbles;
+	for (int i = 0; i < MAX_ROWS; i++)
+	{
+		for (int j = 0; j < MAX_COLS; ++j)
+		{
+			if (board[i][j] == NULL || board[i][j]->getAttachment() != NULL || (board[i][j]->getType() != BUBBLE_TYPE1&&board[i][j]->getType() != BUBBLE_TYPE2&&board[i][j]->getType() != BUBBLE_TYPE3&&board[i][j]->getType() != BUBBLE_TYPE4&&board[i][j]->getType() != BUBBLE_TYPE5&&board[i][j]->getType() != BUBBLE_TYPE6&&board[i][j]->getType() != BUBBLE_TYPE7))
+			{
+				continue;
+			}
+			availableBubbles.pushBack(board[i][j]);
+		}
+	}
+	if (availableBubbles.size() != 0)
+	{
+	auto targetBubble = availableBubbles.at(rand() % availableBubbles.size());
+	targetBubble->addAttachment(obj->getAttachment());
+	targetBubble->getAttachment()->setHasMoved(true);
+	//targetBubble->getAttachment()->setHasWorked(false); //此句可省略
+	obj->removeAttachment();
+	}
+	else {
+		obj->removeAttachment();///如无位置 去除幽灵  将来可以再优化 
+	}
+}
+
 void LevelType1::updateGhostsStatus()
 {
 	for (int i = 0; i < MAX_ROWS; i++)
@@ -374,6 +416,7 @@ void LevelType1::updateGhostsStatus()
 				int stepStatus=board[i][j]->getAttachment()->getStepStatus();
 				stepStatus++;
 				board[i][j]->getAttachment()->setStepStatus(stepStatus);
+				ghostsUpdateAction(board[i][j]);
 			}
 		}
 	}
@@ -397,6 +440,7 @@ void LevelType1::ghostsMagic()
 				board[i][j]->setFlag(temp->getFlag());
 				board[i][j]->setPosition(temp->getPosition());
 				board[i][j]->addAttachment(temp->getAttachment());
+				board[i][j]->getAttachment()->setHasWorked(true);
 				temp->removeFromParentAndCleanup(true);
 				addChild(board[i][j]);
 				//
@@ -1280,6 +1324,17 @@ void LevelType1::randomBombBlastAction(Bubble *obj)
 	//obj->runAction(Sequence::create(DelayTime::create(waitTime), CallFuncN::create(CC_CALLBACK_1(LevelType1::callbackRemoveBubble, this)),NULL));
 	obj->runAction(Sequence::create(FadeOut::create(waitTime), CallFunc::create([=](){obj->removeFromParent(); setEnable(); }), NULL));
 	*/
+}
+void LevelType1::ghostsUpdateAction(Bubble *obj)
+{
+	
+	//SimpleAudioEngine::getInstance()->playEffect("Music/Remove.mp3");等待添加特殊音效
+
+	ArmatureDataManager::getInstance()->addArmatureFileInfo("BubbleSpecial/baozha.ExportJson");
+	Armature* armature = Armature::create("baozha");
+	obj->addChild(armature);
+	armature->setPosition(BUBBLE_RADIUS, BUBBLE_RADIUS);
+	armature->getAnimation()->play("daojubaozha");
 }
 void LevelType1::callbackRemoveBubble(cocos2d::Node *obj)
 {

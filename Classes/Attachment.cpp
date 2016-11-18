@@ -9,6 +9,7 @@ Attachment::Attachment()//构造函数初始化
 {
 	_type = ATTACHMENT_SILVER;
 	_hasMoved = false;
+	_hasWorked = false;
 	_stepStatus = 0;
 
 }

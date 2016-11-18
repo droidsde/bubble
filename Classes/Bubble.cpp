@@ -79,6 +79,7 @@ void Bubble::addAttachment(Attachment* attachment)
 {
 	auto *newAttach = Attachment::initWithType(attachment->getType());
 	newAttach->setHasMoved(attachment->getHasMoved());
+	newAttach->setHasWorked(attachment->getHasWorked());
 	newAttach->setStepStatus(attachment->getStepStatus());
 	newAttach->setPosition(this->getContentSize().width / 2, this->getContentSize().height / 2);
 	_attachment = newAttach;
