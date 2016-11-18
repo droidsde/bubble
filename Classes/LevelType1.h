@@ -38,15 +38,15 @@ private:
 	CC_SYNTHESIZE(int, _level, Level);
 	int _bubbleNumber = 0;
 	bool _havePass = false;
-	int sameGroup1 = 0;
-	int sameGroup2 = 0;
-	int sameGroup3 = 0;
-	int sameGroup4 = 0;
-	int sameGroup5 = 0;
-	int sameGroup6 = 0;
-	int sameGroup7 = 0;
-	int colorfulGroup = 0;
-	int commonGroup = 0;
+	//int sameGroup1 = 0;
+	//int sameGroup2 = 0;
+	//int sameGroup3 = 0;
+	//int sameGroup4 = 0;
+	//int sameGroup5 = 0;
+	//int sameGroup6 = 0;
+	//int sameGroup7 = 0;
+	//int colorfulGroup = 0;
+	//int commonGroup = 0;
 
 	bool* _boardAnimation=new bool(false);
 	EventListenerTouchOneByOne* _listener;
@@ -93,7 +93,7 @@ private:
 	void gameOver(bool over = false);
 	void setReadyAngle(Point target);
 	void throwBallAction();
-	bool isPass();
+	bool isPass(int level);
 	void movementPassCallBack(Armature * armature, MovementEventType type, const std::string &name);
 	void moveParantCallBack(Armature * armature, MovementEventType type, const std::string &name);
 	void readyAction();

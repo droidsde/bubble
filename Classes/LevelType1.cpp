@@ -682,7 +682,7 @@ void LevelType1::stepUpdate()
 }
 void LevelType1:: conditionsCheck()
 {
-	if (isPass() && _havePass == false)
+	if (isPass(_level) && _havePass == false)
 	{
 		_havePass = true;
 		setDisable();
@@ -1027,6 +1027,7 @@ void LevelType1::findTheSameBubble(int i, int j, bool flag, BubbleType type)
 		obj->runAction(Sequence::create(FadeOut::create(waitTime), CallFunc::create([=](){obj->removeFromParent(); }), nullptr));
 	}
 }
+/*
 void LevelType1::findAGroup(int n1, int n2, int n3, int n4, int n5, int n6, int n7)
 {
 	int nmin = 5;
@@ -1078,6 +1079,7 @@ void LevelType1::findAGroup(int n1, int n2, int n3, int n4, int n5, int n6, int 
 
 
 }
+*/
 void LevelType1::bubbleBlast(int i, int j, bool flag)
 {
 	bubbleAction(board[i][j]);
@@ -1496,7 +1498,7 @@ void LevelType1::downBubble()
 	}
 	
 	throwRandomBombs();
-	findAGroup(n1,n2,n3,n4,n5,n6,n7);
+	//findAGroup(n1,n2,n3,n4,n5,n6,n7);
 	conditionsCheck();
 }
 
@@ -1744,12 +1746,29 @@ void LevelType1::throwBallAction()
 	propArmature->getAnimation()->play("huanqiushou");
 }
 
-bool LevelType1::isPass()
+bool LevelType1::isPass(int level)
 {
-	if (commonGroup >= 10||colorfulGroup>=2&&sameGroup1>=2)
-		return true;
-	else
-		return false;
+	switch (level)
+	{
+	case 0:
+		if (true)
+		{
+			return true;
+		}
+	case 1:
+		if (true)
+		{
+			return true;
+		}
+	case 2:
+		if (true)
+		{
+			return true;
+		}
+		break;
+
+	}
+	return false;
 }
 //direction: 0=left,1=right
 void LevelType1::addAChannel(BubbleType type, int direction, int depth,int i,int j)
