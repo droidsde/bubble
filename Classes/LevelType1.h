@@ -38,6 +38,20 @@ private:
 	CC_SYNTHESIZE(int, _level, Level);
 	int _bubbleNumber = 0;
 	bool _havePass = false;
+	int _delType1Num = 0;
+	int _delType2Num = 0;
+	int _delType3Num = 0;
+	int _delType4Num = 0;
+	int _delType5Num = 0;
+	int _delType6Num = 0;
+	int _delType7Num = 0;
+	int _downType1Num = 0;
+	int _downType2Num = 0;
+	int _downType3Num = 0;
+	int _downType4Num = 0;
+	int _downType5Num = 0;
+	int _downType6Num = 0;
+	int _downType7Num = 0;
 	//int sameGroup1 = 0;
 	//int sameGroup2 = 0;
 	//int sameGroup3 = 0;
@@ -110,6 +124,8 @@ private:
 	void ghostsMagic();
 	void ghostsLeaveStone(Bubble* obj);
 	void ghostsUpdateAction(Bubble *obj);
+	void deleteBubbleCount(Bubble* obj);
+	void downBubbleCount(Bubble* obj);
 
 	bool onTouchBegan(Touch *touch, Event *unused_event);
 	void onTouchMoved(Touch *touch, Event *unused_event);

@@ -1258,6 +1258,7 @@ void LevelType1::deleteTheSameBubble(int i, int j, bool flag)
 				if (board[i][j] != nullptr && board[i][j]->getIsSame())
 				{
 					Bubble *obj = board[i][j];
+					deleteBubbleCount(obj);
 					waitTime += 0.05f;
 					SimpleAudioEngine::getInstance()->playEffect("Music/Remove.mp3");
 
@@ -1276,7 +1277,62 @@ void LevelType1::deleteTheSameBubble(int i, int j, bool flag)
 
 
 }
-
+void LevelType1::deleteBubbleCount(Bubble* obj)
+{
+	int type = (int)obj->getType();
+	switch (type)
+	{
+	case 1:
+		_delType1Num++;
+		break;
+	case 2:
+		_delType2Num++;
+		break;
+	case 3:
+		_delType3Num++;
+		break;
+	case 4:
+		_delType4Num++;
+		break;
+	case 5:
+		_delType5Num++;
+		break;
+	case 6:
+		_delType6Num++;
+		break;
+	case 7:
+		_delType7Num++;
+		break;
+	}
+}
+void LevelType1::downBubbleCount(Bubble* obj)
+{
+	int type = (int)obj->getType();
+	switch (type)
+	{
+	case 1:
+		_downType1Num++;
+		break;
+	case 2:
+		_downType2Num++;
+		break;
+	case 3:
+		_downType3Num++;
+		break;
+	case 4:
+		_downType4Num++;
+		break;
+	case 5:
+		_downType5Num++;
+		break;
+	case 6:
+		_downType6Num++;
+		break;
+	case 7:
+		_downType7Num++;
+		break;
+	}
+}
 void LevelType1::bubbleAction(Bubble *obj)
 {
 	//道具爆炸改为与普通爆炸效果相同
@@ -1465,6 +1521,7 @@ void LevelType1::downBubble()
 			if (board[i][j] && !(board[i][j]->getIsPass()))
 			{
 				Bubble *obj = board[i][j];
+				downBubbleCount(obj);
 				//计算下落泡泡中各类型泡泡数
 				switch (obj->getType())
 				{
