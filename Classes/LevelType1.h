@@ -52,6 +52,7 @@ private:
 	int _downType5Num = 0;
 	int _downType6Num = 0;
 	int _downType7Num = 0;
+	int _downTypeStoneNum = 0;
 	//int sameGroup1 = 0;
 	//int sameGroup2 = 0;
 	//int sameGroup3 = 0;
@@ -84,7 +85,7 @@ private:
 	bool getFirstRowFlag();
 	bool isCircleCollision(Point pos1, float radius1, Point pos2, float radius2);
 	void findTheSameBubble(int i, int j, bool flag, BubbleType type);
-	void findAGroup(int n1, int n2, int n3, int n4, int n5, int n6, int n7);
+	//void findAGroup(int n1, int n2, int n3, int n4, int n5, int n6, int n7);
 	void bubbleBlast(int i, int j, bool flag);
 	void randomBombBlast(int i, int j, bool flag);
 	void randomBombBlastAction(Bubble *obj);
@@ -103,7 +104,6 @@ private:
 	void initBubbleAction(Bubble *obj, int i, int j);
 	void addTwoRowsOriginalBubbleAction(Bubble *obj, int i, int j);
 	void addTwoRowsRandomBubbleAction(Bubble *obj, int i, int j);
-	//void throwARandomBombAction(int i, int j);
 	void gameOver(bool over = false);
 	void setReadyAngle(Point target);
 	void throwBallAction();

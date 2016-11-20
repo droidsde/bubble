@@ -3,6 +3,7 @@
 #include "UserData.h"
 #include "SimpleAudioEngine.h"
 #include "PropLayer.h"
+#include "LevelScene.h"
 #include <thread>
 
 using namespace CocosDenshion;
@@ -717,6 +718,17 @@ void LevelType1:: conditionsCheck()
 			addTwoRows();
 		}
 	}
+	if (levelSettings[_level][2][0] == 3)//ÈçÅÝÅÝÏÂ½µÆôÓÃ
+	{
+		if (_bubbleNumber%levelSettings[_level][2][1] == 0)
+		{
+			addTwoRows();
+		}
+		if (checkRemainRows(levelSettings[_level][2][2]))
+		{
+			addTwoRows();
+		}
+	}
 }
 bool LevelType1::checkRemainRows(int row)
 {
@@ -1331,6 +1343,9 @@ void LevelType1::downBubbleCount(Bubble* obj)
 	case 7:
 		_downType7Num++;
 		break;
+	case 10:
+		_downTypeStoneNum++;
+		break;
 	}
 }
 void LevelType1::bubbleAction(Bubble *obj)
@@ -1413,14 +1428,15 @@ void LevelType1::movementPassCallBack(Armature * armature, MovementEventType typ
 		if (name == "gongxiguoguan")
 		{
 			this->removeChild(armature);
-			_level++;
-			if (_level >= MAX_CUS)
-			{
-				return;
-			}
-			this->initTheBoard(_level);
-			UserData::getInstance()->addLevel(1);
-			_havePass = false;
+			Director::getInstance()->pushScene(LevelLayer::scene());
+			//_level++;
+			//if (_level >= MAX_CUS)
+			//{
+			//	return;
+			//}
+			//this->initTheBoard(_level);
+			//UserData::getInstance()->addLevel(1);
+			//_havePass = false;
 		}
 
 	}
@@ -1808,15 +1824,17 @@ bool LevelType1::isPass(int level)
 	switch (level)
 	{
 	case 0:
-		if (true)
+		if (_downTypeStoneNum>=1)
 		{
 			return true;
 		}
+		break;
 	case 1:
 		if (true)
 		{
 			return true;
 		}
+		break;
 	case 2:
 		if (true)
 		{
