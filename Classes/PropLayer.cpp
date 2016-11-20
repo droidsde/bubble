@@ -30,15 +30,15 @@ bool PropLayer::init()
 
 	setTime(60);
 
-	_propLayer = CSLoader::createNode("PropLayer.csb");
-	auto frameSize = Director::getInstance()->getVisibleSize();
-	_propLayer->setContentSize(frameSize);
-	ui::Helper::doLayout(_propLayer);
-	addChild(_propLayer);
+	////_propLayer = CSLoader::createNode("PropLayer.csb");
+	////auto frameSize = Director::getInstance()->getVisibleSize();
+	////_propLayer->setContentSize(frameSize);
+	////ui::Helper::doLayout(_propLayer);
+	//addChild(_propLayer);
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 
-
+	/*
 	auto bomb =  (ui::ImageView*)_propLayer->getChildByTag(24);
 	bomb->addClickEventListener(CC_CALLBACK_1(PropLayer::menuBombCallBack,this));
 
@@ -57,8 +57,11 @@ bool PropLayer::init()
 	auto colorBubbleText = (ui::TextBMFont*)colorBubble->getChildByTag(150);
 	UserData::getInstance()->setColorBubble(10);
 	colorBubbleText->setString(StringUtils::format("%d", UserData::getInstance()->getColorBubble()));
-
-	auto pauseMenu = (ui::Button*)_propLayer->getChildByTag(36);
+	*/
+	////auto pauseMenu = (ui::Button*)_propLayer->getChildByTag(36);
+	auto *pauseMenu = ui::Button::create("Prop/02.png","Prop/02_press.png");
+	pauseMenu->setPosition(Vec2(visibleSize.width-30,visibleSize.height-60));
+	addChild(pauseMenu);
 	pauseMenu->addClickEventListener(CC_CALLBACK_1(PropLayer::menuPauseCallBack, this));
 
 	scheduleUpdate();
@@ -67,18 +70,22 @@ bool PropLayer::init()
 
 void PropLayer::setBombNum()
 {
-	auto bomb = (ui::ImageView*)_propLayer->getChildByTag(24);
+	////auto bomb = (ui::ImageView*)_propLayer->getChildByTag(24);
+	auto* bomb = ui::ImageView::create("Prop/07.png");
 	bomb->addClickEventListener(CC_CALLBACK_1(PropLayer::menuBombCallBack, this));
-	auto bombText = (ui::TextBMFont*)bomb->getChildByTag(152);
+	////auto bombText = (ui::TextBMFont*)bomb->getChildByTag(152);
+	auto *bombText = ui::TextBMFont::create("0", "Fnt/write_fnt.fnt");
 	bombText->setString(StringUtils::format("%d", UserData::getInstance()->getBomb()));
 
 }
 
 void PropLayer::setColorBubbleNum()
 {
-	auto colorBubble = (ui::ImageView*)_propLayer->getChildByTag(22);
+	////auto colorBubble = (ui::ImageView*)_propLayer->getChildByTag(22);
+	auto* colorBubble = ui::ImageView::create("Prop/10.png");
 	colorBubble->addClickEventListener(CC_CALLBACK_1(PropLayer::menuColorBubbleCallBack, this));
-	auto colorBubbleText = (ui::TextBMFont*)colorBubble->getChildByTag(150);
+	////auto colorBubbleText = (ui::TextBMFont*)colorBubble->getChildByTag(150);
+	auto *colorBubbleText = ui::TextBMFont::create("0","Fnt/write_fnt.fnt");
 	colorBubbleText->setString(StringUtils::format("%d", UserData::getInstance()->getColorBubble()));
 }
 
@@ -101,9 +108,11 @@ void PropLayer::menuHourglassCallBack(Ref* Psender)
 		return;
 	}
 	UserData::getInstance()->addHourglass(-1);
-	auto hourglass = (ui::ImageView*)_propLayer->getChildByTag(23);
+	////auto hourglass = (ui::ImageView*)_propLayer->getChildByTag(23);
+	auto *hourglass = ui::ImageView::create("Prop/11.png");
 	hourglass->addClickEventListener(CC_CALLBACK_1(PropLayer::menuHourglassCallBack, this));
-	auto hourglassText = (ui::TextBMFont*)hourglass->getChildByTag(151);
+	////auto hourglassText = (ui::TextBMFont*)hourglass->getChildByTag(151);
+	auto* hourglassText = ui::TextBMFont::create("0","Fnt/write_fnt.fnt");
 	hourglassText->setString(StringUtils::format("%d", UserData::getInstance()->getHourglass()));
 
 	auto time = getTime() + HOURGLASSTIME;
@@ -199,19 +208,25 @@ void PropLayer::update(float delta)
 }
 void PropLayer::AddScoreLabel(int var)
 {
-	auto scoreLabel = (ui::TextBMFont*)_propLayer->getChildByTag(123);
+	////auto scoreLabel = (ui::TextBMFont*)_propLayer->getChildByTag(123);
+	auto* scoreLabel = ui::TextBMFont::create("0","Fnt/write_fnt.fnt");
 	UserData::getInstance()->addScore(var);
 	scoreLabel->setString(StringUtils::format("%d", UserData::getInstance()->getScore()));
 }
+//////cannon 可能出现指针问题
 void PropLayer::setCannonAngle(Point target)
 {
-	auto cannon = (Sprite*)_propLayer->getChildByTag(38);
+	////auto cannon = (Sprite*)_propLayer->getChildByTag(38);
+	auto *cannon = Sprite::create();
+	cannon->initWithFile("emitter2.png");
 	auto angle = (target - READY_PAOPAO_POS).getAngle(Vec2(0, 1));
 	cannon->setRotation(CC_RADIANS_TO_DEGREES(angle));
 }
 void PropLayer::setCannonAction(Point target)
 {
-	auto cannon = (Sprite*)_propLayer->getChildByTag(38);
+	////auto cannon = (Sprite*)_propLayer->getChildByTag(38);
+	auto *cannon = Sprite::create();
+	cannon->initWithFile("emitter2.png");
 	auto angle = cannon->getRotation();
 
 	auto dir = -10 * (target - READY_PAOPAO_POS).getNormalized();
@@ -221,9 +236,9 @@ void PropLayer::setCannonAction(Point target)
 }
 void PropLayer::timeCallFunc()
 {
-	auto timeSptite = (Sprite*)_propLayer->getChildByTag(46);
-	auto time_bg = (Sprite*)timeSptite->getChildByTag(45);
-	auto rotateAction = RotateBy::create(1.0f, -360.0f);
-	auto repeatAction = RepeatForever::create(rotateAction);
-	time_bg->runAction(repeatAction);
+	////auto timeSptite = (Sprite*)_propLayer->getChildByTag(46);
+	////auto time_bg = (Sprite*)timeSptite->getChildByTag(45);
+	////auto rotateAction = RotateBy::create(1.0f, -360.0f);
+	////auto repeatAction = RepeatForever::create(rotateAction);
+	////time_bg->runAction(repeatAction);
 }

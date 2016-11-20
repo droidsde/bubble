@@ -517,10 +517,10 @@ void LevelType1::onTouch(Point target)
 	switch (ready->getType())
 	{
 		case BUBBLE_TYPE_COLOR: UserData::getInstance()->addColorBubble(-1); 
-			proplayer->setColorBubbleNum();
+		proplayer->setColorBubbleNum();
 			break;
 		case BUBBLE_TYPE_BOMB: UserData::getInstance()->addBomb(-1); 
-			proplayer->setBombNum();
+		proplayer->setBombNum();
 			break;
 		default: break;
 	}
@@ -1813,9 +1813,11 @@ void LevelType1::throwBallAction()
 	auto bgArmature = (Armature*)bgNode->getChildByTag(63);
 	bgArmature->getAnimation()->play("huanqiu");
 
-	auto propLayer = (PropLayer*)gameScene->_propLayer;
-	auto propNode = (Node*)propLayer->_propLayer;
-	auto propArmature = (Armature*)propNode->getChildByTag(68);
+	////auto propLayer = (PropLayer*)gameScene->_propLayer;
+	////auto propNode = (Node*)propLayer->_propLayer;
+	////auto propArmature = (Armature*)propNode->getChildByTag(68);
+	ArmatureDataManager::getInstance()->addArmatureFileInfo("nvhaidongzuo1.ExportJson");
+	auto *propArmature = Armature::create("nvhaidongzuo1");
 	propArmature->getAnimation()->play("huanqiushou");
 }
 
