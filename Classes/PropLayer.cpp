@@ -68,6 +68,7 @@ bool PropLayer::init()
 	gl->addAGoalLabel(s1,"BUBBLE_TYPE_STONE");
 	gl->displayLabels(visibleSize.width, visibleSize.height - 60);
 	addChild(gl);
+	gl->updateALabel("BUBBLE_TYPE_STONE", 10);
 
 
 	auto *pauseMenu = ui::Button::create("Prop/02.png","Prop/02_press.png");

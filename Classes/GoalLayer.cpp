@@ -74,3 +74,13 @@ void GoalLayer::displayLabels(int visibleWidth,int positionY)
 		}
 	}
 }
+void GoalLayer::updateALabel(string name, int newValue)
+{
+	for (int i = 0; i < _goalLabels.size(); i++)
+	{
+		if (_goalLabels.at(i)->_name == name)
+		{
+			_goalLabels.at(i)->_label->setText(StringUtils::format("%d", newValue));
+		}
+	}
+}

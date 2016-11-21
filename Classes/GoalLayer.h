@@ -16,6 +16,7 @@ public:
 	Vector<GoalLabel*> _goalLabels;
 	void addAGoalLabel(Sprite* s,string name);
 	void displayLabels(int visibleWidth,int positionY);
+	void updateALabel(string name, int newValue);
 };
 
 
