@@ -4,7 +4,6 @@
 #include "GameConst.h"
 #include "PauseLayer.h"
 #include "cocostudio/CocoStudio.h"
-#include "ui/CocosGUI.h"
 #include "SimpleAudioEngine.h"
 
 using namespace CocosDenshion;
@@ -59,6 +58,18 @@ bool PropLayer::init()
 	colorBubbleText->setString(StringUtils::format("%d", UserData::getInstance()->getColorBubble()));
 	*/
 	////auto pauseMenu = (ui::Button*)_propLayer->getChildByTag(36);
+	//_goalLabel = ui::TextBMFont::create("0", "Fnt/write_fnt.fnt");
+	//_goalLabel->setPosition(Vec2(visibleSize.width/2,visibleSize.height-60));
+	//addChild(_goalLabel);
+	//sample of GoalLayer
+	auto gl = GoalLayer::create();
+	auto s1 = Sprite::create();
+	s1->initWithFile("Bubble/10.png");
+	gl->addAGoalLabel(s1,"BUBBLE_TYPE_STONE");
+	gl->displayLabels(visibleSize.width, visibleSize.height - 60);
+	addChild(gl);
+
+
 	auto *pauseMenu = ui::Button::create("Prop/02.png","Prop/02_press.png");
 	pauseMenu->setPosition(Vec2(visibleSize.width-30,visibleSize.height-60));
 	addChild(pauseMenu);
@@ -212,6 +223,11 @@ void PropLayer::AddScoreLabel(int var)
 	auto* scoreLabel = ui::TextBMFont::create("0","Fnt/write_fnt.fnt");
 	UserData::getInstance()->addScore(var);
 	scoreLabel->setString(StringUtils::format("%d", UserData::getInstance()->getScore()));
+}
+void PropLayer::updateGoalLabel(int var)
+{
+	////auto scoreLabel = (ui::TextBMFont*)_propLayer->getChildByTag(123);
+	_goalLabel->setString(StringUtils::format("%d", var));
 }
 //////cannon 可能出现指针问题
 void PropLayer::setCannonAngle(Point target)
