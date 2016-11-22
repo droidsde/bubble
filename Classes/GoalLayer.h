@@ -7,7 +7,7 @@
 #include "GoalLabel.h"
 
 USING_NS_CC;
-
+//使用方法：auto gl = GoalLayer::create(); gl->addAlabel();gl->displayLabels(visibleWidth,positionY);addChild(gl);
 class GoalLayer : public LayerColor
 {
 public:

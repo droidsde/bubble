@@ -65,8 +65,20 @@ bool PropLayer::init()
 	auto gl = GoalLayer::create();
 	auto s1 = Sprite::create();
 	s1->initWithFile("Bubble/10.png");
+	auto s2 = Sprite::create();
+	s2->initWithFile("Bubble/10.png");
+	auto s3 = Sprite::create();
+	s3->initWithFile("Bubble/10.png");
+	auto s4 = Sprite::create();
+	s4->initWithFile("Bubble/10.png");
+	auto s5 = Sprite::create();
+	s5->initWithFile("Bubble/10.png");
 	gl->addAGoalLabel(s1,"BUBBLE_TYPE_STONE");
-	gl->displayLabels(visibleSize.width, visibleSize.height - 60);
+	gl->addAGoalLabel(s2, "BUBBLE_TYPE_STONE");
+	gl->addAGoalLabel(s3, "BUBBLE_TYPE_STONE");
+	gl->addAGoalLabel(s4, "BUBBLE_TYPE_STONE");
+	gl->addAGoalLabel(s5, "BUBBLE_TYPE_STONE");
+	gl->displayLabels(visibleSize.width, visibleSize.height - 150);
 	addChild(gl);
 	gl->updateALabel("BUBBLE_TYPE_STONE", 10);
 

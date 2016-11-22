@@ -34,13 +34,13 @@ void GoalLayer::displayLabels(int visibleWidth,int positionY)
 			auto gl = _goalLabels.at(i);
 			if (i % 2 == 0)
 			{
-				gl->_sprite->setPosition(Vec2(visibleWidth/2-100*i-75,0));
-				gl->_label->setPosition(Vec2(visibleWidth / 2 - 100 * i-35,0));
+				gl->_sprite->setPosition(Vec2(visibleWidth/2-100*(i/2)-75-10*(i/2+1),0));
+				gl->_label->setPosition(Vec2(visibleWidth / 2 - 100 * (i/2)-25-10*(i / 2 + 1),0));
 			}
 			else
 			{
-				gl->_sprite->setPosition(Vec2(visibleWidth / 2 + 100 * (i-1)+25, 0));
-				gl->_label->setPosition(Vec2(visibleWidth / 2 + 100 * (i-1)+65, 0));
+				gl->_sprite->setPosition(Vec2(visibleWidth / 2 + 100 * (i-1)/2+25+10*((i-1) / 2 + 1), 0));
+				gl->_label->setPosition(Vec2(visibleWidth / 2 + 100 * (i-1)/2+75+10*((i - 1) / 2 + 1), 0));
 			}
 			addChild(gl->_sprite);
 			addChild(gl->_label);
@@ -54,19 +54,19 @@ void GoalLayer::displayLabels(int visibleWidth,int positionY)
 			if (i == 0)
 			{
 				gl->_sprite->setPosition(Vec2(visibleWidth / 2-25, 0));
-				gl->_label->setPosition(Vec2(visibleWidth / 2+15, 0));
+				gl->_label->setPosition(Vec2(visibleWidth / 2+25, 0));
 			}
 			else
 			{
 				if (i % 2 == 0)
 				{
-					gl->_sprite->setPosition(Vec2(visibleWidth / 2 - 100 * (i-1) - 40, 0));
-					gl->_label->setPosition(Vec2(visibleWidth / 2 - 100 * (i-1), 0));
+					gl->_sprite->setPosition(Vec2(visibleWidth / 2 - 100 * (i/2) - 50+25 - 10 * (i / 2 + 1), 0));
+					gl->_label->setPosition(Vec2(visibleWidth / 2 - 100 * (i/2)-50+75 - 10 * (i / 2 + 1), 0));
 				}
 				else
 				{
-					gl->_sprite->setPosition(Vec2(visibleWidth / 2 + 100 * i, 0));
-					gl->_label->setPosition(Vec2(visibleWidth / 2 + 100 * i + 40, 0));
+					gl->_sprite->setPosition(Vec2(visibleWidth / 2 + 100 * ((i-1)/2)+50+25 + 10 * ((i - 1) / 2 + 1), 0));
+					gl->_label->setPosition(Vec2(visibleWidth / 2 + 100 * ((i-1)/2) + 50+75 + 10 * ((i - 1) / 2 + 1), 0));
 				}
 			}
 			addChild(gl->_sprite);
