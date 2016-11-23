@@ -3,7 +3,6 @@
 
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
-#include "GoalLayer.h"
 
 USING_NS_CC;
 
@@ -18,9 +17,7 @@ public:
 	void setCannonAction(Point target);
 	void setBombNum();
 	void setColorBubbleNum();
-	void updateGoalLabel(int var);
 
-	ui::TextBMFont* _goalLabel;
 	Node* _propLayer;
 private:
 

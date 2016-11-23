@@ -3,12 +3,14 @@
 
 #include "cocos2d.h"
 #include "Bubble.h"
+#include "Goal.h"
 #include "Attachment.h"
 #include "PointObject.h"
 #include "GameConst.h"
 #include "GameEnum.h"
 #include "ui/CocosGUI.h"
 #include "cocostudio/CocoStudio.h"
+#include "GoalLayer.h"
 
 
 USING_NS_CC;
@@ -107,7 +109,7 @@ private:
 	void gameOver(bool over = false);
 	void setReadyAngle(Point target);
 	void throwBallAction();
-	bool isPass(int level);
+	bool isPass();
 	void movementPassCallBack(Armature * armature, MovementEventType type, const std::string &name);
 	void moveParantCallBack(Armature * armature, MovementEventType type, const std::string &name);
 	void readyAction();
@@ -126,6 +128,10 @@ private:
 	void ghostsUpdateAction(Bubble *obj);
 	void deleteBubbleCount(Bubble* obj);
 	void downBubbleCount(Bubble* obj);
+	void updateGoals(Bubble* obj);
+	string getBubbleTypeStringByBubbleTypeEnum(BubbleType type);
+	void initGoals();
+	BubbleType getBubbleTypeEnumStringByBubbleTypeString(string type);
 
 	bool onTouchBegan(Touch *touch, Event *unused_event);
 	void onTouchMoved(Touch *touch, Event *unused_event);
@@ -136,6 +142,8 @@ public:
 	Vector<Sprite*> _auxiliary;
 	Vector<PointObject*> _randomBombPositions;
 	Vector<PointObject*> _randomBombAnimationPositions;
+	Vector<Goal*> _goals;
+	GoalLayer* _goalLayer;
 
 	void colorBubble();
 	void swapBubble();

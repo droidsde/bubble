@@ -61,6 +61,12 @@ bool LevelType1::init(int level)
 
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(_listener, this);
 
+	auto g = Goal::create("BUBBLE_TYPE_STONE", 3);
+	_goals.pushBack(g);
+
+	
+	initGoals();
+
 	initTheBoard(_level);
 	initAttachments(_level);
 	initWaitPaoPao();
@@ -464,6 +470,59 @@ void LevelType1::resetHasMoved()
 		}
 	}
 }
+string LevelType1::getBubbleTypeStringByBubbleTypeEnum(BubbleType type)
+{
+	switch (type)
+	{
+	case 10:
+		return "BUBBLE_TYPE_STONE";
+		break;
+	}
+	return "";
+}
+BubbleType LevelType1::getBubbleTypeEnumStringByBubbleTypeString(string type)
+{
+	if (type=="BUBBLE_TYPE_STONE")
+	{
+		return BUBBLE_TYPE_STONE;
+	}
+	return BUBBLE_TYPE_UNKNOW;
+}
+void LevelType1::initGoals()
+{
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	_goalLayer = GoalLayer::create();
+	addChild(_goalLayer);
+	int n = _goals.size();
+	for (int i = 0; i < n; i++)
+	{
+	auto *s = Bubble::initWithBubbleType(getBubbleTypeEnumStringByBubbleTypeString(_goals.at(i)->_name));
+	_goalLayer->addAGoalLabel(s, _goals.at(i)->_name);
+	_goalLayer->updateALabel(_goals.at(i)->_name, _goals.at(i)->_number);
+	}
+	_goalLayer->displayLabels(visibleSize.width, visibleSize.height - 160);
+}
+void LevelType1::updateGoals(Bubble* obj)
+{
+	int n = _goals.size();
+	for (int i = 0; i < n; i++)
+	{
+		if (_goals.at(i)->_name == getBubbleTypeStringByBubbleTypeEnum(obj->getType()))
+		{
+			if (_goals.at(i)->_number > 0)
+			{
+				_goals.at(i)->_number = _goals.at(i)->_number - _downTypeStoneNum;
+				_goalLayer->updateALabel(getBubbleTypeStringByBubbleTypeEnum(obj->getType()), _goals.at(i)->_number);
+			}
+			if(_goals.at(i)->_number <= 0)
+			{
+				_goals.at(i)->_number = 0;
+				_goalLayer->updateALabel(getBubbleTypeStringByBubbleTypeEnum(obj->getType()), _goals.at(i)->_number);
+				_goals.at(i)->_isPass=true;
+			}
+		}
+	}
+}
 Bubble * LevelType1::randomPaoPao()
 {
 	Bubble *pRet = NULL;
@@ -683,7 +742,7 @@ void LevelType1::stepUpdate()
 }
 void LevelType1:: conditionsCheck()
 {
-	if (isPass(_level) && _havePass == false)
+	if (isPass() && _havePass == false)
 	{
 		_havePass = true;
 		setDisable();
@@ -1538,6 +1597,7 @@ void LevelType1::downBubble()
 			{
 				Bubble *obj = board[i][j];
 				downBubbleCount(obj);
+				updateGoals(obj);
 				//计算下落泡泡中各类型泡泡数
 				switch (obj->getType())
 				{
@@ -1821,31 +1881,17 @@ void LevelType1::throwBallAction()
 	propArmature->getAnimation()->play("huanqiushou");
 }
 
-bool LevelType1::isPass(int level)
+bool LevelType1::isPass()
 {
-	switch (level)
+	int n = _goals.size();
+	for (int i = 0; i < n; i++)
 	{
-	case 0:
-		if (_downTypeStoneNum>=1)
+		if (_goals.at(i)->_isPass == false)
 		{
-			return true;
+			return false;
 		}
-		break;
-	case 1:
-		if (true)
-		{
-			return true;
-		}
-		break;
-	case 2:
-		if (true)
-		{
-			return true;
-		}
-		break;
-
 	}
-	return false;
+	return true;
 }
 //direction: 0=left,1=right
 void LevelType1::addAChannel(BubbleType type, int direction, int depth,int i,int j)

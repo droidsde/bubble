@@ -62,25 +62,6 @@ bool PropLayer::init()
 	//_goalLabel->setPosition(Vec2(visibleSize.width/2,visibleSize.height-60));
 	//addChild(_goalLabel);
 	//sample of GoalLayer
-	auto gl = GoalLayer::create();
-	auto s1 = Sprite::create();
-	s1->initWithFile("Bubble/10.png");
-	auto s2 = Sprite::create();
-	s2->initWithFile("Bubble/10.png");
-	auto s3 = Sprite::create();
-	s3->initWithFile("Bubble/10.png");
-	auto s4 = Sprite::create();
-	s4->initWithFile("Bubble/10.png");
-	auto s5 = Sprite::create();
-	s5->initWithFile("Bubble/10.png");
-	gl->addAGoalLabel(s1,"BUBBLE_TYPE_STONE");
-	gl->addAGoalLabel(s2, "BUBBLE_TYPE_STONE");
-	gl->addAGoalLabel(s3, "BUBBLE_TYPE_STONE");
-	gl->addAGoalLabel(s4, "BUBBLE_TYPE_STONE");
-	gl->addAGoalLabel(s5, "BUBBLE_TYPE_STONE");
-	gl->displayLabels(visibleSize.width, visibleSize.height - 150);
-	addChild(gl);
-	gl->updateALabel("BUBBLE_TYPE_STONE", 10);
 
 
 	auto *pauseMenu = ui::Button::create("Prop/02.png","Prop/02_press.png");
@@ -237,12 +218,6 @@ void PropLayer::AddScoreLabel(int var)
 	UserData::getInstance()->addScore(var);
 	scoreLabel->setString(StringUtils::format("%d", UserData::getInstance()->getScore()));
 }
-void PropLayer::updateGoalLabel(int var)
-{
-	////auto scoreLabel = (ui::TextBMFont*)_propLayer->getChildByTag(123);
-	_goalLabel->setString(StringUtils::format("%d", var));
-}
-//////cannon 可能出现指针问题
 void PropLayer::setCannonAngle(Point target)
 {
 	////auto cannon = (Sprite*)_propLayer->getChildByTag(38);
